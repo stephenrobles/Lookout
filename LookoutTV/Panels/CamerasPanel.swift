@@ -49,7 +49,32 @@ struct CamerasPanel: View {
             CameraTile(camera: camera, compact: cameras.count > 2)
                 .aspectRatio(16 / 9, contentMode: .fit)
         }
-        .buttonStyle(.card)
+        .buttonStyle(CameraTileButtonStyle())
+    }
+}
+
+/// Focus treatment for camera tiles: a white ring and a slight lift, kept
+/// small enough that neighbouring tiles in the grid stay readable.
+struct CameraTileButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        CameraTileButtonLabel(configuration: configuration)
+    }
+}
+
+private struct CameraTileButtonLabel: View {
+    let configuration: ButtonStyle.Configuration
+    @Environment(\.isFocused) private var isFocused
+
+    var body: some View {
+        configuration.label
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(.white, lineWidth: isFocused ? 4 : 0)
+            }
+            .scaleEffect(isFocused ? 1.04 : 1)
+            .shadow(color: .black.opacity(isFocused ? 0.5 : 0), radius: 18, y: 10)
+            .opacity(configuration.isPressed ? 0.8 : 1)
+            .animation(.easeOut(duration: 0.18), value: isFocused)
     }
 }
 

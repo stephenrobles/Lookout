@@ -23,7 +23,9 @@ struct BoardView: View {
 
             HStack(alignment: .top, spacing: BoardTheme.gutter) {
                 VStack(alignment: .leading, spacing: BoardTheme.gutter) {
-                    ClockPanel(events: events, alerts: visibleStatuses(snapshot).filter(\.isAlert), settings: settings)
+                    ClockPanel(events: events,
+                               alerts: snapshot.showHomeAlerts ? visibleStatuses(snapshot).filter(\.isAlert) : [],
+                               settings: settings)
                     if snapshot.isEnabled(.weather) {
                         WeatherPanel(weather: weather, settings: settings) { showSettings = true }
                             .frame(maxHeight: .infinity, alignment: .top)

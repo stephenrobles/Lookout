@@ -103,6 +103,9 @@ final class BoardConfig {
     var selectedCameraIDsRaw: String = ""
     var selectedAccessoryIDsRaw: String = ""
     var maxReminders: Int = 6
+    /// The orange banner under the clock for unlocked doors and open garages.
+    /// Independent of the Home panel, so either can be shown without the other.
+    var showHomeAlerts: Bool = true
 
     var lastPublishedAt: Date? = nil
     var publishedFromDevice: String = ""
@@ -254,6 +257,7 @@ nonisolated struct BoardSnapshot: Sendable {
     var selectedCameraIDs: [String] = []
     var selectedAccessoryIDs: [String] = []
     var maxReminders = 6
+    var showHomeAlerts = true
     var lastPublishedAt: Date? = nil
     var publishedFromDevice = ""
     var hasConfig = false
@@ -274,6 +278,7 @@ nonisolated struct BoardSnapshot: Sendable {
         selectedCameraIDs = config.selectedCameraIDs
         selectedAccessoryIDs = config.selectedAccessoryIDs
         maxReminders = config.maxReminders
+        showHomeAlerts = config.showHomeAlerts
         lastPublishedAt = config.lastPublishedAt
         publishedFromDevice = config.publishedFromDevice
     }

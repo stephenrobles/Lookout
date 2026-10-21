@@ -415,7 +415,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				LOOKOUT_CLOUDKIT_ENVIRONMENT = Development;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = fm.beard.Lookout.tv;
+				PRODUCT_BUNDLE_IDENTIFIER = fm.beard.Lookout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -448,7 +448,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				LOOKOUT_CLOUDKIT_ENVIRONMENT = Production;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = fm.beard.Lookout.tv;
+				PRODUCT_BUNDLE_IDENTIFIER = fm.beard.Lookout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;

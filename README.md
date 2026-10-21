@@ -5,7 +5,7 @@ A status board for Apple TV, with an iPhone and iPad companion that feeds it.
 | Target | Bundle ID | What it does |
 | --- | --- | --- |
 | `Lookout` (iOS 26+) | `fm.beard.Lookout` | Reads Calendar, Reminders and HomeKit on the phone; publishes a board description through CloudKit. |
-| `LookoutTV` (tvOS 26+) | `fm.beard.Lookout.tv` | Shows the board. Reads WeatherKit and HomeKit directly on the Apple TV. |
+| `LookoutTV` (tvOS 26+) | `fm.beard.Lookout` (same ID, one App Store record) | Shows the board. Reads WeatherKit and HomeKit directly on the Apple TV. |
 | `Shared/` | | SwiftData models (`BoardConfig`, `AgendaEvent`, `ReminderItem`), the CloudKit-backed store, demo data. |
 
 ## How data flows
@@ -20,14 +20,14 @@ A status board for Apple TV, with an iPhone and iPad companion that feeds it.
 Both apps accept the `-LookoutDemo` launch argument. It swaps in an in-memory store with sample events, reminders, weather, cameras and accessories, and never touches CloudKit. Useful for screenshots and for working on layout without a paired phone:
 
 ```bash
-xcrun simctl launch booted fm.beard.Lookout.tv -LookoutDemo
+xcrun simctl launch booted fm.beard.Lookout -LookoutDemo
 ```
 
 ## One-time Apple Developer setup
 
 Automatic signing adds the iCloud, Push and HomeKit capabilities to both App IDs. Two things still need a visit to developer.apple.com:
 
-1. **WeatherKit** – under Certificates, Identifiers & Profiles → Identifiers → `fm.beard.Lookout.tv` → *App Services*, enable WeatherKit. Weather calls fail with an authentication error until this is on (it can take up to half an hour to propagate).
+1. **WeatherKit** – under Certificates, Identifiers & Profiles → Identifiers → `fm.beard.Lookout` → *App Services*, enable WeatherKit. Weather calls fail with an authentication error until this is on (it can take up to half an hour to propagate).
 2. **CloudKit schema** – run the iPhone app once in the Development environment with calendar access granted, then deploy the schema to Production from CloudKit Console before shipping. Debug builds use `Development`, Release builds use `Production` (see `LOOKOUT_CLOUDKIT_ENVIRONMENT` in the project).
 
 ## Building

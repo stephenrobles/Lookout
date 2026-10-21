@@ -22,6 +22,19 @@ struct PanelsView: View {
                 }
             }
             Section {
+                Toggle(isOn: Binding(
+                    get: { config.showHomeAlerts },
+                    set: { config.showHomeAlerts = $0; config.touch() }
+                )) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Label("Home alerts", systemImage: "exclamationmark.triangle")
+                        Text("An orange banner under the clock when a door is unlocked, a garage is open, or a lock is jammed. Works with or without the Home panel.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            Section {
                 ForEach(config.panelOrder) { kind in
                     HStack {
                         Label(kind.title, systemImage: kind.symbolName)
