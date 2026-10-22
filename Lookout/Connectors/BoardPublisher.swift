@@ -117,7 +117,7 @@ final class BoardPublisher {
     }
 
     func publish(reason: String) async {
-        guard !isPublishing, !LookoutStore.isDemo else { return }
+        guard !isPublishing, !LookoutStore.isDemo, !LookoutSchemaSeed.isRequested else { return }
         isPublishing = true
         defer { isPublishing = false }
         refreshStatus()

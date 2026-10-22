@@ -74,7 +74,7 @@ struct HomePickerView: View {
                                 .foregroundStyle(.tint)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(entry.name)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(Color.primary)
                                 Text([entry.room, entry.kind?.title].compactMap { $0 }.filter { !$0.isEmpty }
                                      .joined(separator: " · "))
                                     .font(.footnote)
@@ -84,11 +84,12 @@ struct HomePickerView: View {
                             if isOn {
                                 Image(systemName: "checkmark")
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(isAll ? .secondary : Color.accentColor)
+                                    .foregroundStyle(isAll ? Color.secondary : Color.accentColor)
                             }
                         }
+                        .contentShape(Rectangle())
                     }
-                    .disabled(isAll)
+                    .buttonStyle(.plain)
                 }
             }
         } header: {

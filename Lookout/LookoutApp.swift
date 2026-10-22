@@ -14,6 +14,10 @@ struct LookoutApp: App {
     init() {
         if LookoutStore.isDemo {
             LookoutDemoData.seed(into: LookoutStore.container.mainContext)
+        } else if LookoutSchemaSeed.isRequested {
+            LookoutSchemaSeed.seed(into: LookoutStore.container.mainContext)
+        } else {
+            LookoutSchemaSeed.cleanSelections(in: LookoutStore.container.mainContext)
         }
         BackgroundRefresh.register()
     }

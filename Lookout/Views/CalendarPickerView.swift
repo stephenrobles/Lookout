@@ -73,6 +73,7 @@ private struct SourcePickerList: View {
     private func row(for calendar: EKCalendar) -> some View {
         let isAll = selection.isEmpty
         let isOn = isAll || selection.contains(calendar.calendarIdentifier)
+        let title = calendar.title.trimmingCharacters(in: .whitespaces)
         return Button {
             guard !isAll else { return }
             if let index = selection.firstIndex(of: calendar.calendarIdentifier) {
@@ -85,16 +86,17 @@ private struct SourcePickerList: View {
                 Circle()
                     .fill(Color(hex: calendar.cgColor?.lookoutHex ?? "#0A84FF"))
                     .frame(width: 12, height: 12)
-                Text(calendar.title)
-                    .foregroundStyle(.primary)
+                Text(title.isEmpty ? "Untitled" : title)
+                    .foregroundStyle(Color.primary)
                 Spacer()
                 if isOn {
                     Image(systemName: "checkmark")
-                        .foregroundStyle(isAll ? .secondary : Color.accentColor)
                         .fontWeight(.semibold)
+                        .foregroundStyle(isAll ? Color.secondary : Color.accentColor)
                 }
             }
+            .contentShape(Rectangle())
         }
-        .disabled(isAll)
+        .buttonStyle(.plain)
     }
 }
