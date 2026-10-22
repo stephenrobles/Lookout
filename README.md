@@ -23,14 +23,19 @@ Both apps accept the `-LookoutDemo` launch argument. It swaps in an in-memory st
 xcrun simctl launch booted fm.beard.Lookout -LookoutDemo
 ```
 
-## One-time Apple Developer setup
+## Apple Developer setup (done 2026-10-21)
 
-Automatic signing adds the iCloud, Push and HomeKit capabilities to both App IDs. Two things still need a visit to developer.apple.com:
+- App Store Connect record "Lookout: Apple TV Dashboard", bundle ID `fm.beard.Lookout`, SKU `lookout`, platforms iOS and tvOS.
+- App ID capabilities: Push Notifications, HomeKit, iCloud with container `iCloud.fm.beard.Lookout`, WeatherKit (Capabilities tab and App Services tab).
+- **CloudKit schema** – run the iPhone app once in Debug with calendar access granted, then deploy the schema from Development to Production in CloudKit Console before relying on a TestFlight build. Debug builds use `Development`, Release builds use `Production` (`LOOKOUT_CLOUDKIT_ENVIRONMENT`).
 
-1. **WeatherKit** – under Certificates, Identifiers & Profiles → Identifiers → `fm.beard.Lookout` → *App Services*, enable WeatherKit. Weather calls fail with an authentication error until this is on (it can take up to half an hour to propagate).
-2. **CloudKit schema** – run the iPhone app once in the Development environment with calendar access granted, then deploy the schema to Production from CloudKit Console before shipping. Debug builds use `Development`, Release builds use `Production` (see `LOOKOUT_CLOUDKIT_ENVIRONMENT` in the project).
+## Uploading to TestFlight
 
-## Building
+`Tools/release.sh` archives both targets and uploads them. It is deliberately not the usual automatic-signing flow: on this Mac xcodebuild can neither use Xcode's account nor provision through the API key, so it archives unsigned, ad-hoc signs with Production entitlements, and exports with manual signing against the App Store profiles "Lookout App Store iOS" and "Lookout App Store tvOS" (created through the App Store Connect API, installed under `~/Library/Developer/Xcode/UserData/Provisioning Profiles`). The upload step authenticates with the shared API key in `~/.appstoreconnect/private_keys`.
+
+Bump `CURRENT_PROJECT_VERSION` in the project before each upload. If App ID capabilities change, recreate the two profiles first (the profiles embed the capability list).
+
+## Building for the simulator
 
 ```bash
 xcodebuild -project Lookout.xcodeproj -scheme Lookout   -destination 'generic/platform=iOS Simulator'  build
