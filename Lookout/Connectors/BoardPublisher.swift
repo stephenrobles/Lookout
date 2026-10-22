@@ -2,6 +2,7 @@ import EventKit
 import Foundation
 import Observation
 import SwiftData
+import SwiftUI
 import UIKit
 
 /// Reads EventKit on this device and writes the agenda and reminder records
@@ -37,8 +38,25 @@ final class BoardPublisher {
 
     // MARK: Access
 
-    var hasCalendarAccess: Bool { calendarStatus == .fullAccess }
-    var hasRemindersAccess: Bool { remindersStatus == .fullAccess }
+    var hasCalendarAccess: Bool { LookoutStore.isDemo || calendarStatus == .fullAccess }
+    var hasRemindersAccess: Bool { LookoutStore.isDemo || remindersStatus == .fullAccess }
+
+    /// Stand-in calendars for demo mode, so the pickers have something to show.
+    @ObservationIgnored private lazy var demoCalendars: [EKCalendar] = BoardPublisher.makeDemoCalendars(
+        [("Personal", "#34C759"), ("Work", "#0A84FF"), ("Family", "#FF2D55"), ("Beard.fm", "#AF52DE")],
+        type: .event, store: eventStore)
+    @ObservationIgnored private lazy var demoReminderLists: [EKCalendar] = BoardPublisher.makeDemoCalendars(
+        [("Errands", "#FF9F0A"), ("Home", "#0A84FF"), ("Work", "#30D158")],
+        type: .reminder, store: eventStore)
+
+    private static func makeDemoCalendars(_ items: [(String, String)], type: EKEntityType, store: EKEventStore) -> [EKCalendar] {
+        items.map { title, hex in
+            let calendar = EKCalendar(for: type, eventStore: store)
+            calendar.title = title
+            calendar.cgColor = UIColor(Color(hex: hex)).cgColor
+            return calendar
+        }
+    }
 
     func requestCalendarAccess() async {
         do {
@@ -66,11 +84,13 @@ final class BoardPublisher {
     }
 
     var calendars: [EKCalendar] {
+        if LookoutStore.isDemo { return demoCalendars }
         guard hasCalendarAccess else { return [] }
         return eventStore.calendars(for: .event).sorted(by: Self.calendarOrder)
     }
 
     var reminderLists: [EKCalendar] {
+        if LookoutStore.isDemo { return demoReminderLists }
         guard hasRemindersAccess else { return [] }
         return eventStore.calendars(for: .reminder).sorted(by: Self.calendarOrder)
     }
@@ -97,7 +117,7 @@ final class BoardPublisher {
     }
 
     func publish(reason: String) async {
-        guard !isPublishing else { return }
+        guard !isPublishing, !LookoutStore.isDemo else { return }
         isPublishing = true
         defer { isPublishing = false }
         refreshStatus()

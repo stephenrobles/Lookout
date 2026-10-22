@@ -6,16 +6,42 @@ import SwiftUI
 struct RootView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \BoardConfig.updatedAt, order: .reverse) private var configs: [BoardConfig]
+    @State private var path = NavigationPath()
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             if let config = configs.first {
                 SettingsList(config: config)
+                    .navigationDestination(for: StagedScreen.self) { screen in
+                        switch screen {
+                        case .panels: PanelsView(config: config)
+                        case .wallpaper: WallpaperView(config: config)
+                        case .home: HomePickerView(config: config)
+                        case .calendars: CalendarPickerView(config: config)
+                        }
+                    }
+                    .onAppear {
+                        if let staged = StagedScreen.fromLaunchArguments, path.isEmpty {
+                            path.append(staged)
+                        }
+                    }
             } else {
                 ProgressView()
                     .task { _ = BoardConfig.fetchOrCreate(in: context) }
             }
         }
+    }
+}
+
+/// `-LookoutScreen panels|wallpaper|home|calendars` opens a screen at launch.
+/// Used to stage App Store screenshots headlessly in demo mode.
+enum StagedScreen: String, Hashable {
+    case panels, wallpaper, home, calendars
+
+    static var fromLaunchArguments: StagedScreen? {
+        let args = CommandLine.arguments
+        guard let index = args.firstIndex(of: "-LookoutScreen"), index + 1 < args.count else { return nil }
+        return StagedScreen(rawValue: args[index + 1])
     }
 }
 

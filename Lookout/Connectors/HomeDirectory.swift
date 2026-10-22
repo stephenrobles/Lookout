@@ -27,6 +27,22 @@ final class HomeDirectory: NSObject, HMHomeManagerDelegate {
 
     func start() {
         guard manager == nil else { return }
+        if LookoutStore.isDemo {
+            cameras = [
+                HomeAccessoryEntry(id: "demo-cam-1", name: "Front Right Camera", room: "Driveway", home: "Home", kind: nil, isCamera: true),
+                HomeAccessoryEntry(id: "demo-cam-2", name: "Porch Camera", room: "Entry", home: "Home", kind: nil, isCamera: true),
+                HomeAccessoryEntry(id: "demo-cam-3", name: "Walkway Camera", room: "Side Yard", home: "Home", kind: nil, isCamera: true),
+            ]
+            accessories = [
+                HomeAccessoryEntry(id: "demo-1", name: "Back Door", room: "Kitchen", home: "Home", kind: .lock, isCamera: false),
+                HomeAccessoryEntry(id: "demo-2", name: "Front Door", room: "Entry", home: "Home", kind: .lock, isCamera: false),
+                HomeAccessoryEntry(id: "demo-3", name: "Laundry Door", room: "Laundry", home: "Home", kind: .lock, isCamera: false),
+                HomeAccessoryEntry(id: "demo-4", name: "Garage", room: "Garage", home: "Home", kind: .garageDoor, isCamera: false),
+                HomeAccessoryEntry(id: "demo-5", name: "Office", room: "Office", home: "Home", kind: .temperature, isCamera: false),
+            ]
+            isLoading = false
+            return
+        }
         let manager = HMHomeManager()
         manager.delegate = self
         self.manager = manager

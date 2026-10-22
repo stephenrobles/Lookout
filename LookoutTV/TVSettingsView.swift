@@ -10,6 +10,14 @@ struct TVSettingsView: View {
     @State private var accountStatus: CKAccountStatus?
 
     var body: some View {
+        ZStack {
+            // A presented view on tvOS has no backdrop of its own; without this the board shows through.
+            Color(white: 0.06).ignoresSafeArea()
+            settingsStack
+        }
+    }
+
+    private var settingsStack: some View {
         NavigationStack {
             List {
                 Section("Weather") {

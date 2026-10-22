@@ -9,7 +9,7 @@
 # created through the App Store Connect API (see README). The upload itself
 # authenticates with the API key, which works.
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 KEY=~/.appstoreconnect/private_keys/AuthKey_Z5YD293RLM.p8
 AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID Z5YD293RLM -authenticationKeyIssuerID 69a6de84-dcf8-47e3-e053-5b8c7c11a4d1)
 mkdir -p build/archives build/sign

@@ -62,6 +62,17 @@ struct BoardView: View {
         .task(id: settings.locationKey) {
             await weather.run(latitude: settings.latitude, longitude: settings.longitude)
         }
+        .onAppear {
+            let args = CommandLine.arguments
+            if LookoutStore.isDemo {
+                if let i = args.firstIndex(of: "-LookoutWallpaper"), i + 1 < args.count {
+                    settings.wallpaperChoice = args[i + 1]
+                }
+                if let i = args.firstIndex(of: "-LookoutScreen"), i + 1 < args.count, args[i + 1] == "settings" {
+                    showSettings = true
+                }
+            }
+        }
         .task {
             home.start()
             while !Task.isCancelled {
