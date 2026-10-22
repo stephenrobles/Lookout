@@ -54,10 +54,12 @@ dashboard,status board,apple tv,calendar,agenda,reminders,weather,homekit,camera
 **Privacy Policy URL:** https://beardfm.app/lookout/privacy/
 
 **What's New (1.0):**
-First release.
+First release. A status board for your Apple TV: clock, agenda, reminders, weather, and your HomeKit cameras, locks and sensors, set up from your iPhone.
 
 **What to Test:**
-Set up the board from the iPhone app: allow Calendar and Reminders access, pick calendars and lists, toggle panels, choose a wallpaper photo and adjust dim and blur. Then open Lookout on an Apple TV signed in to the same iCloud account and confirm the agenda and reminders appear within a minute and update when you change an event. On the TV, open Settings (gear, top right) to set a weather location and check the weather panel. If the Apple TV is a home hub, check camera stills, the live view on click, and the lock, door and sensor states. Report anything that overlaps, truncates or reads poorly from the couch.
+Build 3 changes: calendar, reminder list and Home picker rows now show plain black names (they picked up the amber tint before), reminder lists with no title read "Untitled", and the Apple TV settings screen has a solid backdrop instead of showing the board through it. Also new: the CloudKit schema is deployed, so sync between iPhone and Apple TV works on TestFlight builds for the first time.
+
+To test: on the iPhone, allow Calendar and Reminders access, pick calendars and lists, toggle panels, choose a wallpaper photo and adjust dim and blur. Open Lookout on an Apple TV signed in to the same iCloud account and confirm the agenda and reminders appear within a minute and update when you change an event. On the TV, open Settings (gear, top right) to set a weather location. If the Apple TV is a home hub, check camera stills, the live view on click, and lock, door and sensor states. Report anything that overlaps, truncates or reads poorly from the couch.
 
 ## App Privacy
 
@@ -90,4 +92,5 @@ Files live in `AppStore/screenshots/` as `iphone-*.png`, `ipad-*.png`, `tv-*.png
 ## Submitted
 
 - 1.0 (1) for iOS and tvOS uploaded 2026-10-21; superseded by build 2 (TV settings backdrop fix).
-- 1.0 (2) for iOS and tvOS submitted for App Review on 2026-10-21, and to Beta App Review for the external "Primary Tech" group (public link https://testflight.apple.com/join/tvsynyw7). Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).
+- 1.0 (2) for iOS and tvOS submitted for App Review on 2026-10-21, and to Beta App Review for the external "Primary Tech" group (public link https://testflight.apple.com/join/tvsynyw7). 1.0 (3) replaces build 2 on 2026-10-22: picker text fix, schema seed, settings backdrop.
+- Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).

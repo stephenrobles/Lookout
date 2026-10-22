@@ -21,7 +21,7 @@ const KEY_ID = process.env.ASC_KEY_ID || "Z5YD293RLM";
 const ISSUER_ID = process.env.ASC_ISSUER_ID || "69a6de84-dcf8-47e3-e053-5b8c7c11a4d1";
 const BUNDLE_ID = "fm.beard.Lookout";
 const VERSION = "1.0";
-const BUILD = "2";
+const BUILD = "3";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const API = "https://api.appstoreconnect.apple.com/v1";
 
