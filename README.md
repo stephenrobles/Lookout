@@ -25,7 +25,7 @@ xcrun simctl launch booted fm.beard.Lookout -LookoutDemo
 
 ## Apple Developer setup (done 2026-10-21)
 
-- App Store Connect record "Lookout: Apple TV Dashboard", bundle ID `fm.beard.Lookout`, SKU `lookout`, platforms iOS and tvOS.
+- App Store Connect record "Lookout: TV Dashboard" (originally "Lookout: Apple TV Dashboard"; App Review rejected that name under guideline 5.2.5), bundle ID `fm.beard.Lookout`, SKU `lookout`, platforms iOS and tvOS.
 - App ID capabilities: Push Notifications, HomeKit, iCloud with container `iCloud.fm.beard.Lookout`, WeatherKit (Capabilities tab and App Services tab).
 - **CloudKit schema** – CloudKit only learns record types and fields from records that actually sync, so a fresh container shows nothing to deploy. In Xcode, edit the Lookout scheme → Run → Arguments and add `-LookoutSchemaSeed`, run a Debug build on an iPhone signed in to iCloud, wait a minute, then in CloudKit Console (Development) confirm `CD_BoardConfig`, `CD_AgendaEvent` and `CD_ReminderItem` exist, including `CD_wallpaperImageData_ckAsset`, and click Deploy Schema Changes. Remove the argument and run again; the seed event and reminder disappear on the next publish. Repeat whenever a model gains a field. Debug builds use `Development`, Release builds use `Production` (`LOOKOUT_CLOUDKIT_ENVIRONMENT`).
 

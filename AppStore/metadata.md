@@ -4,7 +4,7 @@ Everything entered in App Store Connect for 1.0, kept here as the source of trut
 
 ## App Information
 
-- **Name:** Lookout: Apple TV Dashboard (as created in App Store Connect)
+- **Name:** Lookout: TV Dashboard (renamed 2026-10-25; "Lookout: Apple TV Dashboard" was rejected under guideline 5.2.5 for using an Apple product name in the app name)
 - **Apple ID:** 6825536782
 - **Subtitle (30):** Your day on the big screen
 - **Bundle ID:** fm.beard.Lookout (iOS + tvOS, universal purchase)
@@ -93,4 +93,5 @@ Files live in `AppStore/screenshots/` as `iphone-*.png`, `ipad-*.png`, `tv-*.png
 
 - 1.0 (1) for iOS and tvOS uploaded 2026-10-21; superseded by build 2 (TV settings backdrop fix).
 - 1.0 (2) for iOS and tvOS submitted for App Review on 2026-10-21, and to Beta App Review for the external "Primary Tech" group (public link https://testflight.apple.com/join/tvsynyw7). 1.0 (3) replaces build 2 on 2026-10-22: picker text fix, schema seed, settings backdrop.
+- 1.0 (3) rejected on 2026-10-25 (guideline 5.2.5: "Apple TV" in the app name). Renamed to "Lookout: TV Dashboard" and resubmitted both platforms with the same build.
 - Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).

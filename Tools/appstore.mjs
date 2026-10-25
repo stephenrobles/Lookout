@@ -59,6 +59,7 @@ const md = readFileSync(join(ROOT, "AppStore/metadata.md"), "utf8");
 const field = (label) => { const m = md.match(new RegExp(`\\*\\*${label}[^*]*\\*\\*\\s*(.+)`)); return m ? m[1].trim() : null; };
 const block = (label) => { const m = md.match(new RegExp(`\\*\\*${label}[^*]*\\*\\*\\n([\\s\\S]*?)\\n\\n(?=\\*\\*|## )`)); return m ? m[1].trim() : null; };
 const META = {
+  name: field("Name:")?.replace(/\s*\(.*$/, ""),
   subtitle: field("Subtitle \\(30\\):"),
   privacyPolicyUrl: field("Privacy Policy URL:"),
   supportUrl: field("Support URL:"),
@@ -120,7 +121,7 @@ async function metadata() {
       // App Store Connect drops privacyPolicyUrl when it is patched together with other
       // attributes on a fresh app info record, so send it on its own.
       try {
-        await patch(`/appInfoLocalizations/${loc.id}`, { data: { type: "appInfoLocalizations", id: loc.id, attributes: { subtitle: META.subtitle } } });
+        await patch(`/appInfoLocalizations/${loc.id}`, { data: { type: "appInfoLocalizations", id: loc.id, attributes: { name: META.name, subtitle: META.subtitle } } });
         await patch(`/appInfoLocalizations/${loc.id}`, { data: { type: "appInfoLocalizations", id: loc.id, attributes: { privacyPolicyUrl: META.privacyPolicyUrl } } });
         console.log(`app info localization updated (${each.attributes.appStoreState}):`, loc.attributes.name);
       } catch (e) { console.log(`app info localization ${loc.id}: ${e.message.slice(0, 200)}`); }
