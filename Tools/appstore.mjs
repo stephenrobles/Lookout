@@ -129,9 +129,12 @@ async function metadata() {
   }
   const cats = await get(`/appCategories?filter[platforms]=IOS,TV_OS&limit=200`);
   const cat = (id) => cats.data.find((c) => c.id === id) ? { type: "appCategories", id } : null;
-  await patch(`/appInfos/${info.id}`, { data: { type: "appInfos", id: info.id, relationships: {
-    primaryCategory: { data: cat("UTILITIES") }, secondaryCategory: { data: cat("LIFESTYLE") } } } });
-  console.log("categories set");
+  // A live app info record is locked; categories carry over to the next version's record anyway.
+  try {
+    await patch(`/appInfos/${info.id}`, { data: { type: "appInfos", id: info.id, relationships: {
+      primaryCategory: { data: cat("UTILITIES") }, secondaryCategory: { data: cat("LIFESTYLE") } } } });
+    console.log("categories set");
+  } catch (e) { if (!/INVALID_STATE/.test(e.message)) throw e; console.log(`categories unchanged (${info.attributes.appStoreState})`); }
   for (const platform of wanted()) {
     const v = await version(a.id, platform);
     await patch(`/appStoreVersions/${v.id}`, { data: { type: "appStoreVersions", id: v.id, attributes: { copyright: META.copyright, versionString: VERSION } } });
