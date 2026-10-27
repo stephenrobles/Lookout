@@ -5,6 +5,7 @@ import SwiftUI
 struct HomePickerView: View {
     @Bindable var config: BoardConfig
     @State private var directory = HomeDirectory()
+    @State private var publisher = BoardPublisher.shared
 
     var body: some View {
         List {
@@ -30,13 +31,13 @@ struct HomePickerView: View {
                               empty: "No HomeKit cameras found.",
                               selection: Binding(
                                 get: { config.selectedCameraIDs },
-                                set: { config.selectedCameraIDs = $0 }
+                                set: { config.selectedCameraIDs = $0; publisher.schedulePublish(after: 1) }
                               ))
                 pickerSection(title: "Accessories", entries: directory.accessories,
                               empty: "No locks, doors, garage doors or sensors found.",
                               selection: Binding(
                                 get: { config.selectedAccessoryIDs },
-                                set: { config.selectedAccessoryIDs = $0 }
+                                set: { config.selectedAccessoryIDs = $0; publisher.schedulePublish(after: 1) }
                               ))
             }
         }

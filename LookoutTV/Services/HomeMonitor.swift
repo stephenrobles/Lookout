@@ -147,11 +147,11 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
             for accessory in home.accessories {
                 let room = accessory.room?.name ?? ""
                 if let profile = accessory.cameraProfiles?.first {
-                    cameras.append(CameraEntry(id: accessory.uniqueIdentifier.uuidString,
+                    cameras.append(CameraEntry(id: accessory.lookoutKey(in: home),
                                                name: accessory.name, room: room, profile: profile))
                 }
                 if let (service, kind) = accessory.lookoutStatusService {
-                    statuses.append(Self.status(for: accessory, service: service, kind: kind, room: room))
+                    statuses.append(Self.status(for: accessory, in: home, service: service, kind: kind, room: room))
                 }
             }
         }
@@ -160,7 +160,7 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
         isReady = true
     }
 
-    private static func status(for accessory: HMAccessory, service: HMService,
+    private static func status(for accessory: HMAccessory, in home: HMHome, service: HMService,
                                kind: HomeAccessoryKind, room: String) -> HomeStatusItem {
         func value(_ type: String) -> Any? {
             service.characteristics.first { $0.characteristicType == type }?.value
@@ -213,7 +213,7 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
             text = "No response"
             alert = false
         }
-        return HomeStatusItem(id: accessory.uniqueIdentifier.uuidString, name: accessory.name, room: room,
+        return HomeStatusItem(id: accessory.lookoutKey(in: home), name: accessory.name, room: room,
                               kind: kind, symbolName: symbol, stateText: text, isAlert: alert,
                               isReachable: accessory.isReachable, celsius: celsius)
     }

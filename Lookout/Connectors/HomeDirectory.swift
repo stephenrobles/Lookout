@@ -2,9 +2,9 @@ import Foundation
 import HomeKit
 import Observation
 
-/// A HomeKit accessory as the picker lists it. Identifiers are HomeKit's own
-/// UUIDs, which are the same on every device sharing the home, so the TV can
-/// look them up directly.
+/// A HomeKit accessory as the picker lists it. Identifiers are home-and-name
+/// keys (see `HMAccessory.lookoutKey`), because HomeKit's UUIDs differ from
+/// one device to the next and the TV has to find the same accessory.
 struct HomeAccessoryEntry: Identifiable, Hashable {
     let id: String
     let name: String
@@ -64,12 +64,12 @@ final class HomeDirectory: NSObject, HMHomeManagerDelegate {
             for accessory in home.accessories {
                 let room = accessory.room?.name ?? ""
                 if accessory.lookoutIsCamera {
-                    cameras.append(HomeAccessoryEntry(id: accessory.uniqueIdentifier.uuidString,
+                    cameras.append(HomeAccessoryEntry(id: accessory.lookoutKey(in: home),
                                                       name: accessory.name, room: room, home: home.name,
                                                       kind: nil, isCamera: true))
                 }
                 if let (_, kind) = accessory.lookoutStatusService {
-                    others.append(HomeAccessoryEntry(id: accessory.uniqueIdentifier.uuidString,
+                    others.append(HomeAccessoryEntry(id: accessory.lookoutKey(in: home),
                                                      name: accessory.name, room: room, home: home.name,
                                                      kind: kind, isCamera: false))
                 }

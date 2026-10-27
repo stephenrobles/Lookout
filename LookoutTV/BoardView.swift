@@ -107,15 +107,19 @@ struct BoardView: View {
     }
 
     private func visibleCameras(_ snapshot: BoardSnapshot) -> [CameraEntry] {
-        let chosen = snapshot.selectedCameraIDs
-        let all = home.cameras
-        let filtered = chosen.isEmpty ? all : chosen.compactMap { id in all.first { $0.id == id } }
-        return Array(filtered.prefix(4))
+        Array(Self.chosen(snapshot.selectedCameraIDs, from: home.cameras).prefix(4))
     }
 
     private func visibleStatuses(_ snapshot: BoardSnapshot) -> [HomeStatusItem] {
-        let chosen = snapshot.selectedAccessoryIDs
-        let all = home.statuses
-        return chosen.isEmpty ? all : chosen.compactMap { id in all.first { $0.id == id } }
+        Self.chosen(snapshot.selectedAccessoryIDs, from: home.statuses)
+    }
+
+    /// Keeps the phone's order. An empty selection means everything, and so
+    /// does a selection that matches nothing here (for example keys saved by
+    /// an older build), so the panel never goes blank.
+    private static func chosen<Item: Identifiable>(_ ids: [String], from all: [Item]) -> [Item] where Item.ID == String {
+        guard !ids.isEmpty else { return all }
+        let picked = ids.compactMap { id in all.first { $0.id == id } }
+        return picked.isEmpty ? all : picked
     }
 }

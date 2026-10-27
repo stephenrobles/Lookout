@@ -67,5 +67,20 @@ extension HMAccessory {
     var lookoutIsCamera: Bool {
         !(cameraProfiles ?? []).isEmpty
     }
+
+    /// The key the iPhone stores for a chosen accessory and the TV matches
+    /// against. HomeKit's `uniqueIdentifier` is scoped to one device, so the
+    /// same accessory has different UUIDs on the phone and the Apple TV; home
+    /// and accessory names are the same everywhere.
+    func lookoutKey(in home: HMHome) -> String {
+        Self.lookoutKey(home: home.name, accessory: name)
+    }
+
+    nonisolated static func lookoutKey(home: String, accessory: String) -> String {
+        // Selections are stored comma-separated, so keep commas out of the key.
+        [home, accessory]
+            .map { $0.replacingOccurrences(of: ",", with: "%2C") }
+            .joined(separator: "|")
+    }
 }
 #endif
