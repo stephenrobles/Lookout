@@ -252,12 +252,14 @@ async function prepare() {
     const v = await version(a.id, platform);
     // The version's declaration shares the version's id; the app-info one is a separate record. Set both.
     const infos = await get(`/apps/${a.id}/appInfos`);
-    const infoDecl = await get(`/appInfos/${infos.data[0].id}/ageRatingDeclaration`).catch(() => null);
+    // Once a version is live its app info is locked; the next version gets an editable record.
+    const info = infos.data.find((x) => x.attributes.appStoreState !== "READY_FOR_SALE") ?? infos.data[0];
+    const infoDecl = await get(`/appInfos/${info.id}/ageRatingDeclaration`).catch(() => null);
     const declIds = [v.id, infoDecl?.data?.id].filter(Boolean);
     const none = ["alcoholTobaccoOrDrugUseOrReferences", "contests", "gamblingSimulated", "horrorOrFearThemes", "matureOrSuggestiveThemes",
       "medicalOrTreatmentInformation", "profanityOrCrudeHumor", "sexualContentGraphicAndNudity", "sexualContentOrNudity", "gunsOrOtherWeapons",
       "violenceCartoonOrFantasy", "violenceRealistic", "violenceRealisticProlongedGraphicOrSadistic"];
-    const no = ["gambling", "unrestrictedWebAccess", "lootBox", "advertising", "messagingAndChat", "userGeneratedContent", "parentalControls", "healthOrWellnessTopics"];
+    const no = ["gambling", "unrestrictedWebAccess", "lootBox", "advertising", "messagingAndChat", "userGeneratedContent", "parentalControls", "healthOrWellnessTopics", "socialMedia"];
     const attrs = { ageAssurance: false, kidsAgeBand: null };
     for (const k of none) attrs[k] = "NONE";
     for (const k of no) attrs[k] = false;
@@ -265,7 +267,7 @@ async function prepare() {
       try {
         await patch(`/ageRatingDeclarations/${id}`, { data: { type: "ageRatingDeclarations", id, attributes: attrs } });
         console.log(`${platform}: age rating declared on ${id} (nothing applies)`);
-      } catch (e) { if (!/NOT_FOUND/.test(e.message)) console.log(`${platform}: age rating on ${id}: ${e.message.slice(0, 600)}`); }
+      } catch (e) { console.log(`${platform}: age rating on ${id}: ${e.message.slice(0, 300)}`); }
     }
   }
 
