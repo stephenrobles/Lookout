@@ -15,7 +15,7 @@ Everything entered in App Store Connect for 1.0, kept here as the source of trut
 - **Price:** Free, all territories
 - **Copyright:** 2026 Stephen Robles
 
-## Version Information (1.0)
+## Version Information (1.1)
 
 **Promotional text (170):**
 Turn an Apple TV into a glanceable status board: clock, agenda, reminders, weather and your HomeKit cameras, locks and sensors. Set it up from your iPhone.
@@ -53,13 +53,13 @@ dashboard,status board,apple tv,calendar,agenda,reminders,weather,homekit,camera
 **Marketing URL:** https://beardfm.app/lookout/
 **Privacy Policy URL:** https://beardfm.app/lookout/privacy/
 
-**What's New (1.0):**
-First release. A status board for your Apple TV: clock, agenda, reminders, weather, and your HomeKit cameras, locks and sensors, set up from your iPhone.
+**What's New (1.1):**
+Choosing specific cameras or home accessories on your iPhone now works on the Apple TV. The TV matches your picks by name, so the Cameras and Home panels show exactly what you chose instead of going empty. Changes made in the Home picker also reach the TV right away.
 
 **What to Test:**
-Build 3 changes: calendar, reminder list and Home picker rows now show plain black names (they picked up the amber tint before), reminder lists with no title read "Untitled", and the Apple TV settings screen has a solid backdrop instead of showing the board through it. Also new: the CloudKit schema is deployed, so sync between iPhone and Apple TV works on TestFlight builds for the first time.
+Build 4 (1.1) fixes camera and accessory selection. Before, turning off "All" and picking a few cameras or accessories on the iPhone left the Cameras and Home panels on the Apple TV empty, because HomeKit gives every device its own identifiers. The TV now matches your picks by home and accessory name, and if a saved selection matches nothing it shows everything rather than a blank panel.
 
-To test: on the iPhone, allow Calendar and Reminders access, pick calendars and lists, toggle panels, choose a wallpaper photo and adjust dim and blur. Open Lookout on an Apple TV signed in to the same iCloud account and confirm the agenda and reminders appear within a minute and update when you change an event. On the TV, open Settings (gear, top right) to set a weather location. If the Apple TV is a home hub, check camera stills, the live view on click, and lock, door and sensor states. Report anything that overlaps, truncates or reads poorly from the couch.
+To test: on the iPhone open Home, turn off All under Cameras and keep one or two, then confirm the Apple TV shows only those within a minute. Do the same under Accessories. Turn All back on and confirm everything returns. Everything from 1.0 still applies: calendars, reminder lists, panels, wallpaper, weather location on the TV, camera stills and live view.
 
 ## App Privacy
 
@@ -94,4 +94,6 @@ Files live in `AppStore/screenshots/` as `iphone-*.png`, `ipad-*.png`, `tv-*.png
 - 1.0 (1) for iOS and tvOS uploaded 2026-10-21; superseded by build 2 (TV settings backdrop fix).
 - 1.0 (2) for iOS and tvOS submitted for App Review on 2026-10-21, and to Beta App Review for the external "Primary Tech" group (public link https://testflight.apple.com/join/tvsynyw7). 1.0 (3) replaces build 2 on 2026-10-22: picker text fix, schema seed, settings backdrop.
 - 1.0 (3) rejected on 2026-10-25 (guideline 5.2.5: "Apple TV" in the app name). Renamed to "Lookout: TV Dashboard" and resubmitted both platforms with the same build.
+- 1.0 (3) approved and released on 2026-10-27 as "Lookout: TV Dashboard" (https://apps.apple.com/us/app/lookout-tv-dashboard/id6825536782).
+- 1.1 (4) for iOS and tvOS uploaded 2026-10-27: HomeKit camera and accessory selection fix. Submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group.
 - Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).
