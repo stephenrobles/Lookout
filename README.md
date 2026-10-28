@@ -41,3 +41,7 @@ Bump `CURRENT_PROJECT_VERSION` in the project before each upload. If App ID capa
 xcodebuild -project Lookout.xcodeproj -scheme Lookout   -destination 'generic/platform=iOS Simulator'  build
 xcodebuild -project Lookout.xcodeproj -scheme LookoutTV -destination 'generic/platform=tvOS Simulator' build
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE). Issues and pull requests are welcome at [github.com/stephenrobles/Lookout](https://github.com/stephenrobles/Lookout).
