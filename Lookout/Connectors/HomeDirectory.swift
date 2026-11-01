@@ -24,6 +24,8 @@ final class HomeDirectory: NSObject, HMHomeManagerDelegate {
     private(set) var isDenied = false
     private(set) var cameras: [HomeAccessoryEntry] = []
     private(set) var accessories: [HomeAccessoryEntry] = []
+    /// True when the account has more than one home, so rows can say which.
+    private(set) var hasMultipleHomes = false
 
     func start() {
         guard manager == nil else { return }
@@ -39,6 +41,8 @@ final class HomeDirectory: NSObject, HMHomeManagerDelegate {
                 HomeAccessoryEntry(id: "demo-3", name: "Laundry Door", room: "Laundry", home: "Home", kind: .lock, isCamera: false),
                 HomeAccessoryEntry(id: "demo-4", name: "Garage", room: "Garage", home: "Home", kind: .garageDoor, isCamera: false),
                 HomeAccessoryEntry(id: "demo-5", name: "Office", room: "Office", home: "Home", kind: .temperature, isCamera: false),
+                HomeAccessoryEntry(id: "demo-6", name: "Living Room Lamp", room: "Living Room", home: "Home", kind: .light, isCamera: false),
+                HomeAccessoryEntry(id: "demo-7", name: "Christmas Tree", room: "Living Room", home: "Home", kind: .outlet, isCamera: false),
             ]
             isLoading = false
             return
@@ -75,8 +79,15 @@ final class HomeDirectory: NSObject, HMHomeManagerDelegate {
                 }
             }
         }
-        self.cameras = cameras.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-        self.accessories = others.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        self.cameras = cameras.sorted(by: Self.byHomeThenName)
+        self.accessories = others.sorted(by: Self.byHomeThenName)
+        hasMultipleHomes = manager.homes.count > 1
         isLoading = false
+    }
+
+    private static func byHomeThenName(_ a: HomeAccessoryEntry, _ b: HomeAccessoryEntry) -> Bool {
+        let homes = a.home.localizedStandardCompare(b.home)
+        if homes != .orderedSame { return homes == .orderedAscending }
+        return a.name.localizedStandardCompare(b.name) == .orderedAscending
     }
 }

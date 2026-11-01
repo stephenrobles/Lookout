@@ -32,7 +32,7 @@ nonisolated enum PanelKind: String, CaseIterable, Codable, Identifiable, Sendabl
         switch self {
         case .weather: "Current conditions, the next hours and the week ahead. Location is set on the Apple TV."
         case .cameras: "Snapshots from the HomeKit cameras you choose, with a live view on selection."
-        case .home: "Locks, doors, garage, sensors and temperatures from HomeKit."
+        case .home: "Lights, plugs, locks, doors, garage, sensors and temperatures from HomeKit."
         case .reminders: "Incomplete reminders with a due date from the lists you choose."
         }
     }

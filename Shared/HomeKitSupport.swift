@@ -6,7 +6,7 @@ import HomeKit
 /// What a HomeKit accessory contributes to the Home panel. Shared so the
 /// iPhone picker and the TV board agree on which accessories count.
 nonisolated enum HomeAccessoryKind: String, Sendable, CaseIterable {
-    case lock, garageDoor, door, window, contactSensor, motionSensor, temperature, doorbell
+    case lock, garageDoor, door, window, contactSensor, motionSensor, temperature, doorbell, light, outlet, `switch`
 
     var title: String {
         switch self {
@@ -18,6 +18,9 @@ nonisolated enum HomeAccessoryKind: String, Sendable, CaseIterable {
         case .motionSensor: "Motion sensor"
         case .temperature: "Temperature"
         case .doorbell: "Doorbell"
+        case .light: "Light"
+        case .outlet: "Smart plug"
+        case .switch: "Switch"
         }
     }
 
@@ -31,6 +34,9 @@ nonisolated enum HomeAccessoryKind: String, Sendable, CaseIterable {
         case .motionSensor: "figure.walk.motion"
         case .temperature: "thermometer.medium"
         case .doorbell: "bell"
+        case .light: "lightbulb"
+        case .outlet: "powerplug"
+        case .switch: "lightswitch.off"
         }
     }
 }
@@ -48,6 +54,9 @@ extension HomeAccessoryKind {
         case HMServiceTypeMotionSensor: .motionSensor
         case HMServiceTypeTemperatureSensor, HMServiceTypeThermostat: .temperature
         case HMServiceTypeDoorbell: .doorbell
+        case HMServiceTypeLightbulb: .light
+        case HMServiceTypeOutlet: .outlet
+        case HMServiceTypeSwitch: .switch
         default: nil
         }
     }

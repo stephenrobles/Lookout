@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Locks, doors, garage, sensors and temperatures as a grid of chips.
+/// Lights, plugs, locks, doors, garage, sensors and temperatures as a grid of chips.
 struct HomePanel: View {
     let items: [HomeStatusItem]
     let isReady: Bool
@@ -16,7 +16,7 @@ struct HomePanel: View {
             } else if !isReady {
                 message("Connecting to your home…")
             } else if items.isEmpty {
-                message("No locks, doors or sensors in this home.")
+                message("No lights, plugs, locks, doors or sensors in your home.")
             } else {
                 Color.clear.overlay(alignment: .topLeading) {
                     LazyVGrid(columns: columns, spacing: 14) {

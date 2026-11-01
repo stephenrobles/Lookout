@@ -7,6 +7,7 @@ struct CameraEntry: Identifiable, Hashable {
     let id: String
     let name: String
     let room: String
+    let home: String
     /// Nil in demo mode.
     let profile: HMCameraProfile?
 
@@ -19,6 +20,7 @@ struct HomeStatusItem: Identifiable, Hashable {
     let id: String
     let name: String
     let room: String
+    let home: String
     let kind: HomeAccessoryKind
     let symbolName: String
     let stateText: String
@@ -29,8 +31,8 @@ struct HomeStatusItem: Identifiable, Hashable {
     let celsius: Double?
 }
 
-/// Reads the primary home on this Apple TV and keeps lock, door and sensor
-/// states current through HomeKit notifications. Cameras are exposed for the
+/// Reads every home this Apple TV can see and keeps light, plug, lock, door
+/// and sensor states current through HomeKit notifications. Cameras are exposed for the
 /// cameras panel to snapshot and stream.
 @Observable
 final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
@@ -39,26 +41,32 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
     private(set) var isDenied = false
     private(set) var cameras: [CameraEntry] = []
     private(set) var statuses: [HomeStatusItem] = []
+    /// True when the account has more than one home, so names can say which.
+    private(set) var hasMultipleHomes = false
 
     func start() {
         guard manager == nil else { return }
         if LookoutStore.isDemo {
             cameras = [
-                CameraEntry(id: "demo-cam-1", name: "Front Right Camera", room: "Outside", profile: nil),
-                CameraEntry(id: "demo-cam-2", name: "Porch Camera", room: "Outside", profile: nil),
-                CameraEntry(id: "demo-cam-3", name: "Walkway Camera", room: "Outside", profile: nil),
+                CameraEntry(id: "demo-cam-1", name: "Front Right Camera", room: "Outside", home: "Home", profile: nil),
+                CameraEntry(id: "demo-cam-2", name: "Porch Camera", room: "Outside", home: "Home", profile: nil),
+                CameraEntry(id: "demo-cam-3", name: "Walkway Camera", room: "Outside", home: "Home", profile: nil),
             ]
             statuses = [
-                HomeStatusItem(id: "demo-1", name: "Back Door", room: "Kitchen", kind: .lock, symbolName: "lock.fill",
+                HomeStatusItem(id: "demo-1", name: "Back Door", room: "Kitchen", home: "Home", kind: .lock, symbolName: "lock.fill",
                                stateText: "Locked", isAlert: false, isReachable: true, celsius: nil),
-                HomeStatusItem(id: "demo-2", name: "Front Door", room: "Entry", kind: .lock, symbolName: "lock.fill",
+                HomeStatusItem(id: "demo-2", name: "Front Door", room: "Entry", home: "Home", kind: .lock, symbolName: "lock.fill",
                                stateText: "Locked", isAlert: false, isReachable: true, celsius: nil),
-                HomeStatusItem(id: "demo-3", name: "Laundry Door", room: "Laundry", kind: .lock, symbolName: "lock.open.fill",
+                HomeStatusItem(id: "demo-3", name: "Laundry Door", room: "Laundry", home: "Home", kind: .lock, symbolName: "lock.open.fill",
                                stateText: "Unlocked", isAlert: true, isReachable: true, celsius: nil),
-                HomeStatusItem(id: "demo-4", name: "Garage", room: "Garage", kind: .garageDoor, symbolName: "door.garage.closed",
+                HomeStatusItem(id: "demo-4", name: "Garage", room: "Garage", home: "Home", kind: .garageDoor, symbolName: "door.garage.closed",
                                stateText: "Closed", isAlert: false, isReachable: true, celsius: nil),
-                HomeStatusItem(id: "demo-5", name: "Office", room: "Office", kind: .temperature, symbolName: "thermometer.medium",
+                HomeStatusItem(id: "demo-5", name: "Office", room: "Office", home: "Home", kind: .temperature, symbolName: "thermometer.medium",
                                stateText: "", isAlert: false, isReachable: true, celsius: 22.5),
+                HomeStatusItem(id: "demo-6", name: "Living Room Lamp", room: "Living Room", home: "Home", kind: .light, symbolName: "lightbulb.fill",
+                               stateText: "On · 60%", isAlert: false, isReachable: true, celsius: nil),
+                HomeStatusItem(id: "demo-7", name: "Christmas Tree", room: "Living Room", home: "Home", kind: .outlet, symbolName: "powerplug",
+                               stateText: "Off", isAlert: false, isReachable: true, celsius: nil),
             ]
             isReady = true
             return
@@ -135,6 +143,8 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
         case .motionSensor: types = [HMCharacteristicTypeMotionDetected]
         case .temperature: types = [HMCharacteristicTypeCurrentTemperature]
         case .doorbell: types = []
+        case .light: types = [HMCharacteristicTypePowerState, HMCharacteristicTypeBrightness]
+        case .outlet, .switch: types = [HMCharacteristicTypePowerState]
         }
         return service.characteristics.filter { types.contains($0.characteristicType) }
     }
@@ -148,16 +158,25 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
                 let room = accessory.room?.name ?? ""
                 if let profile = accessory.cameraProfiles?.first {
                     cameras.append(CameraEntry(id: accessory.lookoutKey(in: home),
-                                               name: accessory.name, room: room, profile: profile))
+                                               name: accessory.name, room: room, home: home.name, profile: profile))
                 }
                 if let (service, kind) = accessory.lookoutStatusService {
                     statuses.append(Self.status(for: accessory, in: home, service: service, kind: kind, room: room))
                 }
             }
         }
-        self.cameras = cameras.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-        self.statuses = statuses.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        self.cameras = cameras.sorted { Self.ordered($0.home, $0.name, before: $1.home, $1.name) }
+        self.statuses = statuses.sorted { Self.ordered($0.home, $0.name, before: $1.home, $1.name) }
+        hasMultipleHomes = manager.homes.count > 1
         isReady = true
+    }
+
+    /// Home name first, then accessory name, so a second home's accessories
+    /// stay together instead of interleaving.
+    private static func ordered(_ homeA: String, _ nameA: String, before homeB: String, _ nameB: String) -> Bool {
+        let homes = homeA.localizedStandardCompare(homeB)
+        if homes != .orderedSame { return homes == .orderedAscending }
+        return nameA.localizedStandardCompare(nameB) == .orderedAscending
     }
 
     private static func status(for accessory: HMAccessory, in home: HMHome, service: HMService,
@@ -208,12 +227,28 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
             text = ""
         case .doorbell:
             text = "Ready"
+        case .light:
+            let on = (value(HMCharacteristicTypePowerState) as? Bool) ?? false
+            if on, let brightness = value(HMCharacteristicTypeBrightness) as? Int, brightness < 100 {
+                text = "On · \(brightness)%"
+            } else {
+                text = on ? "On" : "Off"
+            }
+            symbol = on ? "lightbulb.fill" : "lightbulb"
+        case .outlet:
+            let on = (value(HMCharacteristicTypePowerState) as? Bool) ?? false
+            text = on ? "On" : "Off"
+            symbol = on ? "powerplug.fill" : "powerplug"
+        case .switch:
+            let on = (value(HMCharacteristicTypePowerState) as? Bool) ?? false
+            text = on ? "On" : "Off"
+            symbol = on ? "lightswitch.on" : "lightswitch.off"
         }
         if !accessory.isReachable {
             text = "No response"
             alert = false
         }
-        return HomeStatusItem(id: accessory.lookoutKey(in: home), name: accessory.name, room: room,
+        return HomeStatusItem(id: accessory.lookoutKey(in: home), name: accessory.name, room: room, home: home.name,
                               kind: kind, symbolName: symbol, stateText: text, isAlert: alert,
                               isReachable: accessory.isReachable, celsius: celsius)
     }

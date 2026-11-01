@@ -34,7 +34,7 @@ struct HomePickerView: View {
                                 set: { config.selectedCameraIDs = $0; publisher.schedulePublish(after: 1) }
                               ))
                 pickerSection(title: "Accessories", entries: directory.accessories,
-                              empty: "No locks, doors, garage doors or sensors found.",
+                              empty: "No lights, plugs, locks, doors, garage doors or sensors found.",
                               selection: Binding(
                                 get: { config.selectedAccessoryIDs },
                                 set: { config.selectedAccessoryIDs = $0; publisher.schedulePublish(after: 1) }
@@ -76,7 +76,8 @@ struct HomePickerView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(entry.name)
                                     .foregroundStyle(Color.primary)
-                                Text([entry.room, entry.kind?.title].compactMap { $0 }.filter { !$0.isEmpty }
+                                Text([directory.hasMultipleHomes ? entry.home : nil, entry.room, entry.kind?.title]
+                                     .compactMap { $0 }.filter { !$0.isEmpty }
                                      .joined(separator: " · "))
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)

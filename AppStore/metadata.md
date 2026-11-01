@@ -31,7 +31,7 @@ ON THE APPLE TV
 • Due reminders from the lists you choose, with overdue items called out
 • Current conditions, the next six hours and the week ahead from Apple Weather
 • Camera stills from HomeKit that refresh on their own. Click one with the remote to watch it live, full screen
-• Locks, doors, garage, sensors and temperatures from HomeKit, with an orange banner under the clock when a door is left unlocked
+• Lights, smart plugs, switches, locks, doors, garage, sensors and temperatures from HomeKit, with an orange banner under the clock when a door is left unlocked
 • Keeps the TV awake while the board is showing
 
 ON THE IPHONE AND IPAD
@@ -53,10 +53,15 @@ dashboard,status board,apple tv,calendar,agenda,reminders,weather,homekit,camera
 **Marketing URL:** https://beardfm.app/lookout/
 **Privacy Policy URL:** https://beardfm.app/lookout/privacy/
 
+**What's New (1.2):**
+The Home panel now shows your lights, smart plugs and switches alongside locks, doors, garage, sensors and temperatures. Lights show their brightness when dimmed. If your account has more than one home, the iPhone picker names the home for each camera and accessory and keeps each home's accessories together.
+
 **What's New (1.1):**
 Choosing specific cameras or home accessories on your iPhone now works on the Apple TV. The TV matches your picks by name, so the Cameras and Home panels show exactly what you chose instead of going empty. Changes made in the Home picker also reach the TV right away.
 
 **What to Test:**
+Build 5 (1.2) adds lights, smart plugs and switches to the Home panel and to the Accessories list in the iPhone Home picker. Lights read On, Off or On with a brightness percentage when dimmed; plugs and switches read On or Off. None of them trigger the orange alert banner. With more than one home on the account, the iPhone picker shows the home name under each camera and accessory and lists each home's items together. To test: confirm your lights and plugs appear on the Apple TV and that toggling one in the Home app updates the chip within a few seconds, then pick a few under Accessories on the iPhone and confirm the TV shows only those.
+
 Build 4 (1.1) fixes camera and accessory selection. Before, turning off "All" and picking a few cameras or accessories on the iPhone left the Cameras and Home panels on the Apple TV empty, because HomeKit gives every device its own identifiers. The TV now matches your picks by home and accessory name, and if a saved selection matches nothing it shows everything rather than a blank panel.
 
 To test: on the iPhone open Home, turn off All under Cameras and keep one or two, then confirm the Apple TV shows only those within a minute. Do the same under Accessories. Turn All back on and confirm everything returns. Everything from 1.0 still applies: calendars, reminder lists, panels, wallpaper, weather location on the TV, camera stills and live view.
@@ -95,5 +100,6 @@ Files live in `AppStore/screenshots/` as `iphone-*.png`, `ipad-*.png`, `tv-*.png
 - 1.0 (2) for iOS and tvOS submitted for App Review on 2026-10-21, and to Beta App Review for the external "Primary Tech" group (public link https://testflight.apple.com/join/tvsynyw7). 1.0 (3) replaces build 2 on 2026-10-22: picker text fix, schema seed, settings backdrop.
 - 1.0 (3) rejected on 2026-10-25 (guideline 5.2.5: "Apple TV" in the app name). Renamed to "Lookout: TV Dashboard" and resubmitted both platforms with the same build.
 - 1.0 (3) approved and released on 2026-10-27 as "Lookout: TV Dashboard" (https://apps.apple.com/us/app/lookout-tv-dashboard/id6825536782).
-- 1.1 (4) for iOS and tvOS uploaded 2026-10-27: HomeKit camera and accessory selection fix. Submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group.
+- 1.1 (4) for iOS and tvOS uploaded 2026-10-27: HomeKit camera and accessory selection fix. Submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group. Live on 2026-10-30.
+- 1.2 (5): lights, smart plugs and switches in the Home panel, plus home names in the picker for accounts with several homes (requested by a listener). Not yet uploaded.
 - Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).
