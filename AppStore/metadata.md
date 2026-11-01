@@ -101,5 +101,5 @@ Files live in `AppStore/screenshots/` as `iphone-*.png`, `ipad-*.png`, `tv-*.png
 - 1.0 (3) rejected on 2026-10-25 (guideline 5.2.5: "Apple TV" in the app name). Renamed to "Lookout: TV Dashboard" and resubmitted both platforms with the same build.
 - 1.0 (3) approved and released on 2026-10-27 as "Lookout: TV Dashboard" (https://apps.apple.com/us/app/lookout-tv-dashboard/id6825536782).
 - 1.1 (4) for iOS and tvOS uploaded 2026-10-27: HomeKit camera and accessory selection fix. Submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group. Live on 2026-10-30.
-- 1.2 (5): lights, smart plugs and switches in the Home panel, plus home names in the picker for accounts with several homes (requested by a listener). Not yet uploaded.
+- 1.2 (5): lights, smart plugs and switches in the Home panel, plus home names in the picker for accounts with several homes (requested by a listener). Uploaded 2026-11-01, submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group.
 - Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).
