@@ -1,12 +1,14 @@
 import HomeKit
 import SwiftUI
 
-/// Camera stills, refreshed every few seconds. Selecting a tile opens the
-/// live stream full screen.
+/// Camera stills, refreshed every few seconds, or a live picture for cameras
+/// that do not give stills. Selecting a tile opens the stream full screen.
 struct CamerasPanel: View {
     let cameras: [CameraEntry]
     let isReady: Bool
     let isDenied: Bool
+    /// The iPhone picker has every camera switched off.
+    var noneChosen = false
     let open: (CameraEntry) -> Void
 
     private let tileSpacing: CGFloat = 16
@@ -18,7 +20,8 @@ struct CamerasPanel: View {
             } else if !isReady {
                 message("Connecting to your home…")
             } else if cameras.isEmpty {
-                message("No HomeKit cameras in this home.")
+                message(noneChosen ? "No cameras chosen. Pick some in the Lookout app on your iPhone."
+                                   : "No HomeKit cameras in this home.")
             } else if cameras.count <= 2 {
                 VStack(spacing: tileSpacing) {
                     ForEach(cameras) { camera in
@@ -78,47 +81,57 @@ private struct CameraTileButtonLabel: View {
     }
 }
 
-/// One camera still with a name caption.
+/// One camera picture with a name caption. The picture keeps the camera's
+/// own proportions and is cropped to the 16:9 tile rather than stretched.
 private struct CameraTile: View {
     let camera: CameraEntry
     let compact: Bool
-    @State private var controller: CameraSnapshotController
+    private let feed: CameraFeed
 
     init(camera: CameraEntry, compact: Bool) {
         self.camera = camera
         self.compact = compact
-        _controller = State(initialValue: CameraSnapshotController(profile: camera.profile))
+        feed = CameraFeedRegistry.shared.feed(for: camera)
     }
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             if camera.profile == nil {
                 DemoCameraPlaceholder(name: camera.name)
-            } else if let snapshot = controller.snapshot {
-                CameraSourceView(source: snapshot)
+            } else if let source = feed.source {
+                Color.black.overlay {
+                    CameraSourceView(source: source)
+                        .aspectRatio(feed.aspectRatio, contentMode: .fill)
+                }
+                .clipped()
             } else {
                 ZStack {
                     Color.black.opacity(0.5)
                     VStack(spacing: 10) {
-                        Image(systemName: controller.failed ? "video.slash" : "video")
+                        Image(systemName: feed.failed ? "video.slash" : "video")
                             .font(.system(size: 34))
-                        Text(controller.failed ? "No picture" : "Connecting…")
+                        Text(feed.failed ? "No picture" : "Connecting…")
                             .font(BoardTheme.rowSecondary)
                     }
                     .foregroundStyle(.secondary)
                 }
             }
             LinearGradient(colors: [.clear, .black.opacity(0.65)], startPoint: .center, endPoint: .bottom)
-            Text(camera.name)
-                .font(compact ? BoardTheme.chipState : BoardTheme.chipTitle)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                .padding(.horizontal, 14)
-                .padding(.bottom, 10)
-                .shadow(radius: 4)
+            HStack(spacing: 8) {
+                if feed.isLive {
+                    Circle().fill(.red).frame(width: 10, height: 10)
+                }
+                Text(camera.name)
+                    .font(compact ? BoardTheme.chipState : BoardTheme.chipTitle)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .padding(.horizontal, 14)
+            .padding(.bottom, 10)
+            .shadow(radius: 4)
         }
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .task { await controller.run() }
+        .task(id: camera.id) { await feed.run(live: false) }
     }
 }
 
@@ -137,15 +150,17 @@ struct DemoCameraPlaceholder: View {
     }
 }
 
-/// Full-screen live stream, dismissed with the Menu button.
+/// Full-screen live stream, dismissed with the Menu button. The picture is
+/// letterboxed to the camera's proportions; the latest still shows while the
+/// stream starts.
 struct LiveCameraView: View {
     let camera: CameraEntry
     @Environment(\.dismiss) private var dismiss
-    @State private var controller: CameraStreamController
+    private let feed: CameraFeed
 
     init(camera: CameraEntry) {
         self.camera = camera
-        _controller = State(initialValue: CameraStreamController(profile: camera.profile))
+        feed = CameraFeedRegistry.shared.feed(for: camera)
     }
 
     var body: some View {
@@ -154,28 +169,40 @@ struct LiveCameraView: View {
             if camera.profile == nil {
                 DemoCameraPlaceholder(name: camera.name)
                     .ignoresSafeArea()
-            } else if let stream = controller.stream {
-                CameraSourceView(source: stream)
+            } else if let source = feed.source {
+                CameraSourceView(source: source)
+                    .aspectRatio(feed.aspectRatio, contentMode: .fit)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .ignoresSafeArea()
             } else {
                 VStack(spacing: 14) {
                     ProgressView()
-                    Text(controller.errorText ?? "Starting stream…")
+                    Text(feed.errorText ?? "Starting stream…")
                         .font(BoardTheme.row)
                         .foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             HStack(spacing: 12) {
-                Circle().fill(.red).frame(width: 14, height: 14)
+                if feed.isLive {
+                    Circle().fill(.red).frame(width: 14, height: 14)
+                } else {
+                    ProgressView()
+                }
                 Text(camera.name)
                     .font(BoardTheme.cardTitle)
+                if !feed.isLive, let error = feed.errorText {
+                    Text(error)
+                        .font(BoardTheme.rowSecondary)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 14)
             .background(.regularMaterial, in: Capsule())
             .padding(40)
         }
-        .onAppear { controller.start() }
-        .onDisappear { controller.stop() }
+        .task(id: camera.id) { await feed.run(live: true) }
     }
 }

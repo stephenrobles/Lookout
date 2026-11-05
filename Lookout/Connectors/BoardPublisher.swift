@@ -18,9 +18,28 @@ final class BoardPublisher {
     private(set) var isPublishing = false
     private(set) var lastError: String?
     private(set) var lastPublishReason: String?
+    /// The other iPhone or iPad that currently publishes, when it is not
+    /// this one. Automatic publishes are skipped while it is set.
+    private(set) var deferringTo: String?
 
     private var changeObserver: NSObjectProtocol?
     private var pending: Task<Void, Never>?
+
+    /// What this device signs its publishes with. iOS gives every phone the
+    /// same generic name, so a short tail of the vendor identifier keeps two
+    /// iPhones on one account apart. Shown on the TV as "Published by".
+    static let deviceName: String = {
+        let name = UIDevice.current.name
+        let id = UIDevice.current.identifierForVendor?.uuidString ?? ""
+        let tail = String(id.suffix(4))
+        return tail.isEmpty ? name : "\(name) \(tail)"
+    }()
+
+    /// If the publishing device has been silent this long, any device may
+    /// take over, so a phone that was reset or retired cannot freeze the board.
+    /// A bare "iPhone" or "iPad" owner comes from a build before 1.3 and is
+    /// treated as free.
+    private let ownerTimeout: TimeInterval = 36 * 60 * 60
 
     /// Reminders further out than this are not published; the TV shows a
     /// handful anyway.
@@ -105,18 +124,23 @@ final class BoardPublisher {
 
     /// Coalesces bursts of changes (EventKit fires several notifications per
     /// edit) into one publish.
-    func schedulePublish(after seconds: Double) {
+    ///
+    /// `claim` marks a change the user made here (a picker, a stepper, the
+    /// Publish button): this device then takes over publishing. Automatic
+    /// publishes leave the job to whichever device last claimed it, so two
+    /// phones on one account stop overwriting each other's agenda.
+    func schedulePublish(after seconds: Double, claim: Bool = false) {
         pending?.cancel()
         pending = Task { @MainActor [weak self] in
             if seconds > 0 {
                 try? await Task.sleep(for: .seconds(seconds))
             }
             guard !Task.isCancelled else { return }
-            await self?.publish(reason: "change")
+            await self?.publish(reason: "change", claim: claim)
         }
     }
 
-    func publish(reason: String) async {
+    func publish(reason: String, claim: Bool = false) async {
         guard !isPublishing, !LookoutStore.isDemo, !LookoutSchemaSeed.isRequested else { return }
         isPublishing = true
         defer { isPublishing = false }
@@ -124,6 +148,15 @@ final class BoardPublisher {
 
         let context = LookoutStore.container.mainContext
         let config = Self.dedupedConfig(in: context)
+
+        let owner = config.publishedFromDevice
+        if !claim, !owner.isEmpty, owner != Self.deviceName, owner != UIDevice.current.name,
+           let last = config.lastPublishedAt, Date.now.timeIntervalSince(last) < ownerTimeout {
+            deferringTo = owner
+            lastPublishReason = "\(reason), left to \(owner)"
+            return
+        }
+        deferringTo = nil
 
         if hasCalendarAccess {
             publishEvents(config: config, context: context)
@@ -133,7 +166,7 @@ final class BoardPublisher {
         }
 
         config.lastPublishedAt = .now
-        config.publishedFromDevice = UIDevice.current.name
+        config.publishedFromDevice = Self.deviceName
         config.touch()
         do {
             try context.save()
@@ -163,17 +196,20 @@ final class BoardPublisher {
         let start = calendar.startOfDay(for: .now)
         let end = calendar.date(byAdding: .day, value: max(1, config.daysAhead), to: start) ?? start
 
-        let selected = Set(config.selectedCalendarIDs)
-        let chosen = eventStore.calendars(for: .event).filter { selected.contains($0.calendarIdentifier) }
-        let predicate = eventStore.predicateForEvents(withStart: start, end: end,
-                                                      calendars: chosen.isEmpty ? nil : chosen)
-        let events = eventStore.events(matching: predicate).filter { event in
-            if event.status == .canceled { return false }
-            if let me = event.attendees?.first(where: { $0.isCurrentUser }),
-               me.participantStatus == .declined {
-                return false
+        let events: [EKEvent]
+        if let chosen = chosenCalendars(config.selectedCalendarIDs, for: .event) {
+            let predicate = eventStore.predicateForEvents(withStart: start, end: end,
+                                                          calendars: chosen.isEmpty ? nil : chosen)
+            events = eventStore.events(matching: predicate).filter { event in
+                if event.status == .canceled { return false }
+                if let me = event.attendees?.first(where: { $0.isCurrentUser }),
+                   me.participantStatus == .declined {
+                    return false
+                }
+                return true
             }
-            return true
+        } else {
+            events = []
         }
 
         let existing = (try? context.fetch(FetchDescriptor<AgendaEvent>())) ?? []
@@ -222,6 +258,17 @@ final class BoardPublisher {
         }
     }
 
+    /// The calendars a selection names on this device: nil when the user
+    /// chose none, an empty array for "all". Calendar identifiers differ
+    /// between devices, so a selection made elsewhere that matches nothing
+    /// here falls back to all rather than silently publishing nothing.
+    private func chosenCalendars(_ selection: [String], for type: EKEntityType) -> [EKCalendar]? {
+        guard let ids = SourceSelection.chosenIDs(selection) else { return [] }
+        if ids.isEmpty { return nil }
+        let selected = Set(ids)
+        return eventStore.calendars(for: type).filter { selected.contains($0.calendarIdentifier) }
+    }
+
     private struct ReminderRow: Sendable {
         var identifier: String
         var title: String
@@ -234,13 +281,12 @@ final class BoardPublisher {
     }
 
     private func publishReminders(config: BoardConfig, context: ModelContext) async {
-        let selected = Set(config.selectedReminderListIDs)
-        let chosen = eventStore.calendars(for: .reminder).filter { selected.contains($0.calendarIdentifier) }
-        let predicate = eventStore.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil,
-                                                                   calendars: chosen.isEmpty ? nil : chosen)
         let horizon = Calendar.current.date(byAdding: .day, value: reminderHorizonDays, to: .now) ?? .distantFuture
         let store = eventStore
-        let rows: [ReminderRow] = await withCheckedContinuation { continuation in
+        let chosen = chosenCalendars(config.selectedReminderListIDs, for: .reminder)
+        let predicate = store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil,
+                                                              calendars: (chosen ?? []).isEmpty ? nil : chosen)
+        let rows: [ReminderRow] = chosen == nil ? [] : await withCheckedContinuation { continuation in
             store.fetchReminders(matching: predicate) { reminders in
                 let rows: [ReminderRow] = (reminders ?? []).compactMap { reminder in
                     guard let components = reminder.dueDateComponents,

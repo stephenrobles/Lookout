@@ -62,7 +62,7 @@ private struct SettingsList: View {
         }
         .navigationTitle("Lookout")
         .task { await loadAccountStatus() }
-        .onChange(of: config.daysAhead) { config.touch(); publisher.schedulePublish(after: 1) }
+        .onChange(of: config.daysAhead) { config.touch(); publisher.schedulePublish(after: 1, claim: true) }
     }
 
     // MARK: Status
@@ -87,11 +87,17 @@ private struct SettingsList: View {
                         .font(.footnote)
                         .foregroundStyle(.orange)
                 }
+                if let other = otherPublisher {
+                    Label("\(other) publishes the calendars and reminders. Change something here or tap Publish now to publish from this \(UIDevice.current.model) instead.",
+                          systemImage: "iphone.gen3.radiowaves.left.and.right")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.vertical, 4)
 
             Button {
-                Task { await publisher.publish(reason: "manual") }
+                Task { await publisher.publish(reason: "manual", claim: true) }
             } label: {
                 HStack {
                     Label("Publish now", systemImage: "arrow.up.circle")
@@ -103,8 +109,16 @@ private struct SettingsList: View {
             }
             .disabled(publisher.isPublishing || LookoutStore.isDemo)
         } footer: {
-            Text("Lookout publishes automatically when your calendars or reminders change, when you open the app, and periodically in the background. Open Lookout on your Apple TV signed in to the same iCloud account.")
+            Text("Lookout publishes automatically when your calendars or reminders change, when you open the app, and periodically in the background. With more than one iPhone or iPad on the account, the one you last changed settings on does the publishing. Open Lookout on your Apple TV signed in to the same iCloud account.")
         }
+    }
+
+    /// The device that owns publishing, when it is another one.
+    private var otherPublisher: String? {
+        let owner = config.publishedFromDevice
+        guard !LookoutStore.isDemo, !owner.isEmpty,
+              owner != BoardPublisher.deviceName, owner != UIDevice.current.name else { return nil }
+        return owner
     }
 
     private var statusLine: String {
@@ -112,7 +126,9 @@ private struct SettingsList: View {
         switch accountStatus {
         case .available?:
             if let date = config.lastPublishedAt {
-                return "Published \(date.formatted(.relative(presentation: .named)))"
+                let when = date.formatted(.relative(presentation: .named))
+                if let other = otherPublisher { return "Published \(when) by \(other)" }
+                return "Published \(when)"
             }
             return "iCloud ready · not published yet"
         case .noAccount?: return "Sign in to iCloud in Settings to sync"
@@ -152,9 +168,14 @@ private struct SettingsList: View {
     }
 
     private var calendarSummary: String {
-        let selected = config.selectedCalendarIDs
-        if selected.isEmpty { return "All" }
-        return "\(selected.count) of \(publisher.calendars.count)"
+        Self.summary(config.selectedCalendarIDs, of: publisher.calendars.count)
+    }
+
+    /// "All", "None" or "2 of 5".
+    private static func summary(_ selection: [String], of total: Int) -> String {
+        if SourceSelection.isAll(selection) { return "All" }
+        if SourceSelection.isNone(selection) { return "None" }
+        return "\(selection.count) of \(total)"
     }
 
     // MARK: Reminders
@@ -169,7 +190,7 @@ private struct SettingsList: View {
                 }
                 Stepper(value: Binding(
                     get: { config.maxReminders },
-                    set: { config.maxReminders = $0; config.touch() }
+                    set: { config.maxReminders = $0; config.touch(); publisher.schedulePublish(after: 1, claim: true) }
                 ), in: 3...12) {
                     LabeledContent("Items on board", value: "\(config.maxReminders)")
                 }
@@ -184,9 +205,7 @@ private struct SettingsList: View {
     }
 
     private var reminderSummary: String {
-        let selected = config.selectedReminderListIDs
-        if selected.isEmpty { return "All" }
-        return "\(selected.count) of \(publisher.reminderLists.count)"
+        Self.summary(config.selectedReminderListIDs, of: publisher.reminderLists.count)
     }
 
     @ViewBuilder
@@ -266,15 +285,22 @@ private struct SettingsList: View {
         } header: {
             Text("Home")
         } footer: {
-            Text("The Apple TV reads HomeKit directly. Choose here which cameras and accessories it shows; leave everything unselected to show all of them.")
+            Text("The Apple TV reads HomeKit directly. Choose here which cameras and accessories it shows.")
         }
     }
 
     private var homeSummary: String {
-        let cameras = config.selectedCameraIDs.count
-        let accessories = config.selectedAccessoryIDs.count
-        if cameras == 0 && accessories == 0 { return "All" }
-        return "\(cameras) cameras · \(accessories) accessories"
+        let cameras = config.selectedCameraIDs
+        let accessories = config.selectedAccessoryIDs
+        if SourceSelection.isAll(cameras) && SourceSelection.isAll(accessories) { return "All" }
+        if SourceSelection.isNone(cameras) && SourceSelection.isNone(accessories) { return "None" }
+        return "\(Self.count(cameras)) cameras · \(Self.count(accessories)) accessories"
+    }
+
+    private static func count(_ selection: [String]) -> String {
+        if SourceSelection.isAll(selection) { return "All" }
+        if SourceSelection.isNone(selection) { return "No" }
+        return "\(selection.count)"
     }
 
     // MARK: About

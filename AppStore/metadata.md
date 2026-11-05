@@ -53,6 +53,9 @@ dashboard,status board,apple tv,calendar,agenda,reminders,weather,homekit,camera
 **Marketing URL:** https://beardfm.app/lookout/
 **Privacy Policy URL:** https://beardfm.app/lookout/privacy/
 
+**What's New (1.3):**
+Picking cameras and accessories on your iPhone now works the way you'd expect: turning off All clears every item, tapping an item leaves just that one out, and unchecking the last one keeps the panel empty instead of showing everything again. The same applies to calendars and reminder lists. If more than one iPhone or iPad on your account runs Lookout, the one you last changed settings on does the publishing, so two phones no longer overwrite each other's agenda. Camera pictures keep their true proportions instead of being stretched, and cameras that don't provide stills now show a live picture on the board.
+
 **What's New (1.2):**
 The Home panel now shows your lights, smart plugs and switches alongside locks, doors, garage, sensors and temperatures. Lights show their brightness when dimmed. If your account has more than one home, the iPhone picker names the home for each camera and accessory and keeps each home's accessories together.
 
@@ -60,6 +63,8 @@ The Home panel now shows your lights, smart plugs and switches alongside locks, 
 Choosing specific cameras or home accessories on your iPhone now works on the Apple TV. The TV matches your picks by name, so the Cameras and Home panels show exactly what you chose instead of going empty. Changes made in the Home picker also reach the TV right away.
 
 **What to Test:**
+Build 6 (1.3) fixes the pickers, multi-device publishing and camera tiles. Pickers: on the iPhone open Home, turn off All under Cameras and confirm every checkmark disappears and the Apple TV's Cameras panel reads "No cameras chosen"; tap one camera and confirm only it comes back on the TV; with All on, tap one camera and confirm the others stay checked and the TV drops just that one. Do the same under Accessories, Calendars and Reminder lists. Multi-device: if you run Lookout on two iPhones or iPads, change a setting on one; the main screen on the other should read "Published … by iPhone XXXX" with a note that the first device publishes, and the agenda on the TV should stop flipping between the two devices' calendars. Cameras: tiles should show the camera's own proportions (cropped, not stretched), the full-screen view letterboxes, and a camera that never gave a still before should show a live picture with a red dot after a few seconds.
+
 Build 5 (1.2) adds lights, smart plugs and switches to the Home panel and to the Accessories list in the iPhone Home picker. Lights read On, Off or On with a brightness percentage when dimmed; plugs and switches read On or Off. None of them trigger the orange alert banner. With more than one home on the account, the iPhone picker shows the home name under each camera and accessory and lists each home's items together. To test: confirm your lights and plugs appear on the Apple TV and that toggling one in the Home app updates the chip within a few seconds, then pick a few under Accessories on the iPhone and confirm the TV shows only those.
 
 Build 4 (1.1) fixes camera and accessory selection. Before, turning off "All" and picking a few cameras or accessories on the iPhone left the Cameras and Home panels on the Apple TV empty, because HomeKit gives every device its own identifiers. The TV now matches your picks by home and accessory name, and if a saved selection matches nothing it shows everything rather than a blank panel.
@@ -102,4 +107,5 @@ Files live in `AppStore/screenshots/` as `iphone-*.png`, `ipad-*.png`, `tv-*.png
 - 1.0 (3) approved and released on 2026-10-27 as "Lookout: TV Dashboard" (https://apps.apple.com/us/app/lookout-tv-dashboard/id6825536782).
 - 1.1 (4) for iOS and tvOS uploaded 2026-10-27: HomeKit camera and accessory selection fix. Submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group. Live on 2026-10-30.
 - 1.2 (5): lights, smart plugs and switches in the Home panel, plus home names in the picker for accounts with several homes (requested by a listener). Uploaded 2026-11-01, submitted for App Review (automatic release) and to the "Primary Tech" TestFlight group.
+- 1.3 (6): picker "none" fix (David Hunter's report), one publishing device per account (Don Brown's calendars report), camera proportions and stream fallback (Don Brown's cameras report). Built 2026-11-05 on branch 1.3; not yet uploaded.
 - Managed with `node Tools/appstore.mjs` (status, metadata, screenshots, attach, prepare, testflight, submit).

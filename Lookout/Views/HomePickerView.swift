@@ -31,13 +31,13 @@ struct HomePickerView: View {
                               empty: "No HomeKit cameras found.",
                               selection: Binding(
                                 get: { config.selectedCameraIDs },
-                                set: { config.selectedCameraIDs = $0; publisher.schedulePublish(after: 1) }
+                                set: { config.selectedCameraIDs = $0; publisher.schedulePublish(after: 1, claim: true) }
                               ))
                 pickerSection(title: "Accessories", entries: directory.accessories,
                               empty: "No lights, plugs, locks, doors, garage doors or sensors found.",
                               selection: Binding(
                                 get: { config.selectedAccessoryIDs },
-                                set: { config.selectedAccessoryIDs = $0; publisher.schedulePublish(after: 1) }
+                                set: { config.selectedAccessoryIDs = $0; publisher.schedulePublish(after: 1, claim: true) }
                               ))
             }
         }
@@ -55,19 +55,14 @@ struct HomePickerView: View {
                     .foregroundStyle(.secondary)
             } else {
                 Toggle("All", isOn: Binding(
-                    get: { selection.wrappedValue.isEmpty },
-                    set: { all in selection.wrappedValue = all ? [] : entries.map(\.id) }
+                    get: { SourceSelection.isAll(selection.wrappedValue) },
+                    set: { all in selection.wrappedValue = SourceSelection.selectingAll(all) }
                 ))
                 ForEach(entries) { entry in
-                    let isAll = selection.wrappedValue.isEmpty
-                    let isOn = isAll || selection.wrappedValue.contains(entry.id)
+                    let isOn = SourceSelection.contains(selection.wrappedValue, entry.id)
                     Button {
-                        guard !isAll else { return }
-                        if let index = selection.wrappedValue.firstIndex(of: entry.id) {
-                            selection.wrappedValue.remove(at: index)
-                        } else {
-                            selection.wrappedValue.append(entry.id)
-                        }
+                        selection.wrappedValue = SourceSelection.toggling(
+                            entry.id, in: selection.wrappedValue, among: entries.map(\.id))
                     } label: {
                         HStack(spacing: 12) {
                             Image(systemName: entry.isCamera ? "video" : (entry.kind?.symbolName ?? "sensor"))
@@ -86,7 +81,7 @@ struct HomePickerView: View {
                             if isOn {
                                 Image(systemName: "checkmark")
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(isAll ? Color.secondary : Color.accentColor)
+                                    .foregroundStyle(Color.accentColor)
                             }
                         }
                         .contentShape(Rectangle())
@@ -96,6 +91,10 @@ struct HomePickerView: View {
             }
         } header: {
             Text(title)
+        } footer: {
+            if !entries.isEmpty {
+                Text("Turn off All to show none, or tap an item to leave it out.")
+            }
         }
     }
 }

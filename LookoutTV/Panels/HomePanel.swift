@@ -5,6 +5,8 @@ struct HomePanel: View {
     let items: [HomeStatusItem]
     let isReady: Bool
     let isDenied: Bool
+    /// The iPhone picker has every accessory switched off.
+    var noneChosen = false
     let settings: TVSettings
 
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
@@ -16,7 +18,8 @@ struct HomePanel: View {
             } else if !isReady {
                 message("Connecting to your home…")
             } else if items.isEmpty {
-                message("No lights, plugs, locks, doors or sensors in your home.")
+                message(noneChosen ? "No accessories chosen. Pick some in the Lookout app on your iPhone."
+                                   : "No lights, plugs, locks, doors or sensors in your home.")
             } else {
                 Color.clear.overlay(alignment: .topLeading) {
                     LazyVGrid(columns: columns, spacing: 14) {

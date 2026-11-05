@@ -13,6 +13,8 @@ A status board for Apple TV, with an iPhone and iPad companion that feeds it.
 - The iPhone app is the only writer. It upserts one `BoardConfig` record plus one `AgendaEvent` per calendar occurrence in the published window and one `ReminderItem` per due reminder.
 - Records sync through the CloudKit private database `iCloud.fm.beard.Lookout`. The TV registers for silent pushes so changes land while the board is on screen.
 - Weather (WeatherKit) and HomeKit (cameras, lights, plugs, locks, doors, sensors) are read on the Apple TV itself. The phone only chooses which cameras and accessories to show.
+- The four "which ones" lists (`selectedCalendarIDsRaw`, `selectedReminderListIDsRaw`, `selectedCameraIDsRaw`, `selectedAccessoryIDsRaw`) are comma-joined identifiers. Empty means all, the single marker `none` means nothing, and the helpers in `SourceSelection` keep the pickers, the publisher and the TV in agreement. HomeKit keys are `home|accessory name`, since UUIDs differ per device; EventKit identifiers are device-specific too, so a calendar selection that matches nothing on the publishing device falls back to all.
+- With more than one iPhone or iPad on the account, the one that last changed a setting (or tapped Publish now) owns publishing; `publishedFromDevice` holds its name plus a short vendor-identifier tail. Automatic publishes on other devices are skipped until the owner has been silent for 36 hours.
 - The TV keeps its own small settings in `UserDefaults`: weather location, temperature units, 12/24-hour clock, and a wallpaper override.
 
 ## Demo mode

@@ -92,11 +92,13 @@ struct BoardView: View {
     private func rightPanel(_ kind: PanelKind, snapshot: BoardSnapshot) -> some View {
         switch kind {
         case .cameras:
-            CamerasPanel(cameras: visibleCameras(snapshot), isReady: home.isReady, isDenied: home.isDenied) { camera in
+            CamerasPanel(cameras: visibleCameras(snapshot), isReady: home.isReady, isDenied: home.isDenied,
+                         noneChosen: SourceSelection.isNone(snapshot.selectedCameraIDs)) { camera in
                 liveCamera = camera
             }
         case .home:
-            HomePanel(items: visibleStatuses(snapshot), isReady: home.isReady, isDenied: home.isDenied, settings: settings)
+            HomePanel(items: visibleStatuses(snapshot), isReady: home.isReady, isDenied: home.isDenied,
+                      noneChosen: SourceSelection.isNone(snapshot.selectedAccessoryIDs), settings: settings)
                 .frame(maxHeight: .infinity, alignment: .top)
         case .reminders:
             RemindersPanel(reminders: reminders, limit: snapshot.maxReminders, settings: settings)
@@ -114,12 +116,14 @@ struct BoardView: View {
         Self.chosen(snapshot.selectedAccessoryIDs, from: home.statuses)
     }
 
-    /// Keeps the phone's order. An empty selection means everything, and so
-    /// does a selection that matches nothing here (for example keys saved by
-    /// an older build), so the panel never goes blank.
+    /// Keeps the phone's order. An empty selection means everything, the
+    /// "none" marker means nothing, and a selection that matches nothing here
+    /// (for example keys saved by an older build) falls back to everything so
+    /// the panel never goes blank by accident.
     private static func chosen<Item: Identifiable>(_ ids: [String], from all: [Item]) -> [Item] where Item.ID == String {
-        guard !ids.isEmpty else { return all }
-        let picked = ids.compactMap { id in all.first { $0.id == id } }
+        guard let wanted = SourceSelection.chosenIDs(ids) else { return all }
+        guard !wanted.isEmpty else { return [] }
+        let picked = wanted.compactMap { id in all.first { $0.id == id } }
         return picked.isEmpty ? all : picked
     }
 }

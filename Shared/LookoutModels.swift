@@ -114,6 +114,58 @@ final class BoardConfig {
     init() {}
 }
 
+// MARK: - Source selections
+
+/// How the four "which ones" lists are stored. An empty list means
+/// everything; the single marker `none` means nothing; otherwise the list
+/// holds the chosen identifiers. The marker exists because an empty list
+/// already meant "all", so there was no way to say "nothing".
+nonisolated enum SourceSelection {
+    static let noneMarker = "none"
+
+    static func isAll(_ selection: [String]) -> Bool { selection.isEmpty }
+    static func isNone(_ selection: [String]) -> Bool { selection == [noneMarker] }
+
+    /// The identifiers to use, or nil for "all". Nothing chosen gives `[]`.
+    static func chosenIDs(_ selection: [String]) -> [String]? {
+        if isAll(selection) { return nil }
+        return selection.filter { $0 != noneMarker }
+    }
+
+    static func contains(_ selection: [String], _ id: String) -> Bool {
+        isAll(selection) || selection.contains(id)
+    }
+
+    static func selectingAll(_ all: Bool) -> [String] {
+        all ? [] : [noneMarker]
+    }
+
+    /// Flips one entry. Leaving "all" keeps every other entry checked; the
+    /// list collapses back to "all" once every entry is checked again and to
+    /// "none" once the last one is unchecked.
+    static func toggling(_ id: String, in selection: [String], among allIDs: [String]) -> [String] {
+        var ids: [String]
+        if isAll(selection) {
+            ids = allIDs.filter { $0 != id }
+        } else {
+            ids = selection.filter { $0 != noneMarker }
+            if let index = ids.firstIndex(of: id) {
+                ids.remove(at: index)
+            } else {
+                ids.append(id)
+            }
+        }
+        return normalized(ids, among: allIDs)
+    }
+
+    static func normalized(_ ids: [String], among allIDs: [String]) -> [String] {
+        let ids = ids.filter { $0 != noneMarker }
+        if ids.isEmpty { return [noneMarker] }
+        if !allIDs.isEmpty, allIDs.allSatisfy(ids.contains) { return [] }
+        return ids
+    }
+}
+
 extension BoardConfig {
     nonisolated static func split(_ raw: String) -> [String] {
         raw.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
