@@ -1,0 +1,1782 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ %@": {
+      "shouldTranslate": false
+    },
+    "%@ publishes the calendars and reminders. Change something here or tap Publish now to publish from this %@ instead.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ veröffentlicht die Kalender und Erinnerungen. Ändere hier etwas oder tippe auf „Jetzt veröffentlichen“, um stattdessen von diesem %2$@ zu veröffentlichen."
+          }
+        }
+      }
+    },
+    "%lld accessories need attention": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Geräte brauchen Aufmerksamkeit"
+          }
+        }
+      }
+    },
+    "%lld doors need attention": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Türen brauchen Aufmerksamkeit"
+          }
+        }
+      }
+    },
+    "%lld h": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Std."
+          }
+        }
+      }
+    },
+    "%lld h %lld min": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld Std. %2$lld Min."
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Min."
+          }
+        }
+      }
+    },
+    "%lld of %lld": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld von %2$lld"
+          }
+        }
+      }
+    },
+    "%lld%%": {
+      "shouldTranslate": false
+    },
+    "1 accessory needs attention": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Gerät braucht Aufmerksamkeit"
+          }
+        }
+      }
+    },
+    "1 door needs attention": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Tür braucht Aufmerksamkeit"
+          }
+        }
+      }
+    },
+    "12-hour": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 Stunden"
+          }
+        }
+      }
+    },
+    "24-hour": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24 Stunden"
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Info"
+          }
+        }
+      }
+    },
+    "Access is off": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zugriff ist deaktiviert"
+          }
+        }
+      }
+    },
+    "Accessories": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geräte"
+          }
+        }
+      }
+    },
+    "Agenda": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agenda"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle"
+          }
+        }
+      }
+    },
+    "All day": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ganztägig"
+          }
+        }
+      }
+    },
+    "Allow calendar access": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalenderzugriff erlauben"
+          }
+        }
+      }
+    },
+    "Allow reminders access": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zugriff auf Erinnerungen erlauben"
+          }
+        }
+      }
+    },
+    "An orange banner under the clock when a door is unlocked, a garage is open, or a lock is jammed. Works with or without the Home panel.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein oranges Banner unter der Uhr, wenn eine Tür entriegelt, ein Garagentor offen oder ein Schloss blockiert ist. Funktioniert mit oder ohne Home-Bereich."
+          }
+        }
+      }
+    },
+    "Apple TV board": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple TV-Board"
+          }
+        }
+      }
+    },
+    "Automatic": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch"
+          }
+        }
+      }
+    },
+    "Blur": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weichzeichnen"
+          }
+        }
+      }
+    },
+    "Calendar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalender"
+          }
+        }
+      }
+    },
+    "Calendars": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalender"
+          }
+        }
+      }
+    },
+    "Calendars, reminders, panels and the wallpaper photo are chosen in the Lookout app on an iPhone or iPad signed in to the same iCloud account.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalender, Erinnerungen, Bereiche und das Hintergrundfoto werden in der Lookout-App auf einem iPhone oder iPad gewählt, das mit demselben iCloud-Account angemeldet ist."
+          }
+        }
+      }
+    },
+    "Cameras": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kameras"
+          }
+        }
+      }
+    },
+    "Cameras and accessories": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kameras und Geräte"
+          }
+        }
+      }
+    },
+    "Cameras: %@ · Accessories: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kameras: %1$@ · Geräte: %2$@"
+          }
+        }
+      }
+    },
+    "Celsius": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celsius"
+          }
+        }
+      }
+    },
+    "Change photo": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto ändern"
+          }
+        }
+      }
+    },
+    "Checking iCloud…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud wird geprüft …"
+          }
+        }
+      }
+    },
+    "Checking…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird geprüft …"
+          }
+        }
+      }
+    },
+    "Choose a location to show the weather here.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen Ort, um hier das Wetter zu sehen."
+          }
+        }
+      }
+    },
+    "Choose photo": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto auswählen"
+          }
+        }
+      }
+    },
+    "City or place": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stadt oder Ort"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Bewegung"
+          }
+        }
+      }
+    },
+    "Clock": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uhr"
+          }
+        }
+      }
+    },
+    "Closed": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschlossen"
+          }
+        }
+      }
+    },
+    "Closing": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schließt"
+          }
+        }
+      }
+    },
+    "Connecting to your home…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbindung zu deinem Zuhause …"
+          }
+        }
+      }
+    },
+    "Connecting…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinden …"
+          }
+        }
+      }
+    },
+    "Contact sensor": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontaktsensor"
+          }
+        }
+      }
+    },
+    "Could not find this Apple TV's location.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Standort dieses Apple TV konnte nicht ermittelt werden."
+          }
+        }
+      }
+    },
+    "Could not search right now.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Suche ist gerade nicht möglich."
+          }
+        }
+      }
+    },
+    "Current conditions, the next hours and the week ahead. Location is set on the Apple TV.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuelles Wetter, die nächsten Stunden und die kommende Woche. Der Ort wird auf dem Apple TV festgelegt."
+          }
+        }
+      }
+    },
+    "Current location": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktueller Standort"
+          }
+        }
+      }
+    },
+    "Days shown": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angezeigte Tage"
+          }
+        }
+      }
+    },
+    "Demo": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demo"
+          }
+        }
+      }
+    },
+    "Demo data (not synced)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demodaten (nicht synchronisiert)"
+          }
+        }
+      }
+    },
+    "Dim": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abdunkeln"
+          }
+        }
+      }
+    },
+    "Door": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tür"
+          }
+        }
+      }
+    },
+    "Doorbell": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Türklingel"
+          }
+        }
+      }
+    },
+    "Dusk": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dämmerung"
+          }
+        }
+      }
+    },
+    "Ember": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glut"
+          }
+        }
+      }
+    },
+    "Events from the calendars chosen on your iPhone will appear here.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termine aus den auf deinem iPhone gewählten Kalendern erscheinen hier."
+          }
+        }
+      }
+    },
+    "Fahrenheit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahrenheit"
+          }
+        }
+      }
+    },
+    "Feels %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gefühlt %@"
+          }
+        }
+      }
+    },
+    "Follow iPhone": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie iPhone"
+          }
+        }
+      }
+    },
+    "Follow iPhone shows the photo or gradient chosen in the Lookout app on your iPhone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Wie iPhone“ zeigt das Foto oder den Verlauf, der in der Lookout-App auf deinem iPhone gewählt ist."
+          }
+        }
+      }
+    },
+    "Forest": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wald"
+          }
+        }
+      }
+    },
+    "Garage door": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garagentor"
+          }
+        }
+      }
+    },
+    "Gradient": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlauf"
+          }
+        }
+      }
+    },
+    "Graphite": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Graphit"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
+          }
+        }
+      }
+    },
+    "Home alerts": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home-Warnungen"
+          }
+        }
+      }
+    },
+    "HomeKit access is off for Lookout. Allow it in Settings › Apps › Lookout.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der HomeKit-Zugriff ist für Lookout deaktiviert. Erlaube ihn unter Einstellungen › Apps › Lookout."
+          }
+        }
+      }
+    },
+    "HomeKit access is off. Turn it on in Settings › Privacy & Security › HomeKit to choose cameras and accessories.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der HomeKit-Zugriff ist deaktiviert. Aktiviere ihn unter Einstellungen › Datenschutz & Sicherheit › HomeKit, um Kameras und Geräte auszuwählen."
+          }
+        }
+      }
+    },
+    "Humidity %lld%%": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luftfeuchte %lld %%"
+          }
+        }
+      }
+    },
+    "Incomplete reminders from the lists you choose, together or one section per list.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offene Erinnerungen aus den gewählten Listen, gemeinsam oder mit einem Abschnitt pro Liste."
+          }
+        }
+      }
+    },
+    "Items on board": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einträge auf dem Board"
+          }
+        }
+      }
+    },
+    "Jammed": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blockiert"
+          }
+        }
+      }
+    },
+    "Last update from iPhone": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzte Aktualisierung vom iPhone"
+          }
+        }
+      }
+    },
+    "Layout": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layout"
+          }
+        }
+      }
+    },
+    "Legibility": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lesbarkeit"
+          }
+        }
+      }
+    },
+    "Light": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licht"
+          }
+        }
+      }
+    },
+    "Lights, plugs, locks, doors, garage, sensors and temperatures from HomeKit.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lichter, Steckdosen, Schlösser, Türen, Garage, Sensoren und Temperaturen aus HomeKit."
+          }
+        }
+      }
+    },
+    "Lists": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen"
+          }
+        }
+      }
+    },
+    "Loading your home…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Zuhause wird geladen …"
+          }
+        }
+      }
+    },
+    "Loading…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laden …"
+          }
+        }
+      }
+    },
+    "Location": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ort"
+          }
+        }
+      }
+    },
+    "Location access is off for Lookout.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Ortungszugriff ist für Lookout deaktiviert."
+          }
+        }
+      }
+    },
+    "Location access is off for Lookout. Allow it in Settings › Privacy & Security.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Ortungszugriff ist für Lookout deaktiviert. Erlaube ihn unter Einstellungen › Datenschutz & Sicherheit."
+          }
+        }
+      }
+    },
+    "Lock": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schloss"
+          }
+        }
+      }
+    },
+    "Locked": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verriegelt"
+          }
+        }
+      }
+    },
+    "Lookout": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout"
+          }
+        }
+      }
+    },
+    "Lookout Settings": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout-Einstellungen"
+          }
+        }
+      }
+    },
+    "Lookout publishes automatically when your calendars or reminders change, when you open the app, and periodically in the background. With more than one iPhone or iPad on the account, the one you last changed settings on does the publishing. Open Lookout on your Apple TV signed in to the same iCloud account.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout veröffentlicht automatisch, wenn sich deine Kalender oder Erinnerungen ändern, wenn du die App öffnest und regelmäßig im Hintergrund. Bei mehreren iPhones oder iPads im Account veröffentlicht das Gerät, auf dem du zuletzt Einstellungen geändert hast. Öffne Lookout auf deinem Apple TV, das mit demselben iCloud-Account angemeldet ist."
+          }
+        }
+      }
+    },
+    "Midnight": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitternacht"
+          }
+        }
+      }
+    },
+    "Motion": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung"
+          }
+        }
+      }
+    },
+    "Motion sensor": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegungssensor"
+          }
+        }
+      }
+    },
+    "Needed to show due reminders on the board.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nötig, um fällige Erinnerungen auf dem Board zu zeigen."
+          }
+        }
+      }
+    },
+    "Needed to show upcoming events on the board.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nötig, um anstehende Termine auf dem Board zu zeigen."
+          }
+        }
+      }
+    },
+    "Never": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie"
+          }
+        }
+      }
+    },
+    "Next: %@ in %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als Nächstes: %1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "No HomeKit cameras found.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine HomeKit-Kameras gefunden."
+          }
+        }
+      }
+    },
+    "No HomeKit cameras in this home.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine HomeKit-Kameras in diesem Zuhause."
+          }
+        }
+      }
+    },
+    "No accessories chosen. Pick some in the Lookout app on your iPhone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Geräte ausgewählt. Wähle welche in der Lookout-App auf deinem iPhone."
+          }
+        }
+      }
+    },
+    "No cameras chosen. Pick some in the Lookout app on your iPhone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Kameras ausgewählt. Wähle welche in der Lookout-App auf deinem iPhone."
+          }
+        }
+      }
+    },
+    "No lights, plugs, locks, doors or sensors in your home.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Lichter, Steckdosen, Schlösser, Türen oder Sensoren in deinem Zuhause."
+          }
+        }
+      }
+    },
+    "No lights, plugs, locks, doors, garage doors or sensors found.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Lichter, Steckdosen, Schlösser, Türen, Garagentore oder Sensoren gefunden."
+          }
+        }
+      }
+    },
+    "No picture": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Bild"
+          }
+        }
+      }
+    },
+    "No places found.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Orte gefunden."
+          }
+        }
+      }
+    },
+    "No reminders due": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine fälligen Erinnerungen"
+          }
+        }
+      }
+    },
+    "No response": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Antwort"
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine"
+          }
+        }
+      }
+    },
+    "Not set": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht festgelegt"
+          }
+        }
+      }
+    },
+    "Not signed in": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht angemeldet"
+          }
+        }
+      }
+    },
+    "Nothing coming up": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts geplant"
+          }
+        }
+      }
+    },
+    "Nothing more today": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute nichts mehr"
+          }
+        }
+      }
+    },
+    "Nothing on your lists": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts auf deinen Listen"
+          }
+        }
+      }
+    },
+    "Nothing scheduled today": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute nichts geplant"
+          }
+        }
+      }
+    },
+    "Now": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt"
+          }
+        }
+      }
+    },
+    "Now: %@ · %@ left": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt: %1$@ · noch %2$@"
+          }
+        }
+      }
+    },
+    "Ocean": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ozean"
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein"
+          }
+        }
+      }
+    },
+    "On · %lld%%": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein · %lld %%"
+          }
+        }
+      }
+    },
+    "Open": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offen"
+          }
+        }
+      }
+    },
+    "Open Lookout on your iPhone, sign in to the same iCloud account as this Apple TV, and allow calendar access. Your agenda appears here a few moments after it publishes.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffne Lookout auf deinem iPhone, melde dich mit demselben iCloud-Account wie auf diesem Apple TV an und erlaube den Kalenderzugriff. Deine Agenda erscheint hier kurz nach dem Veröffentlichen."
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen öffnen"
+          }
+        }
+      }
+    },
+    "Opening": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Andere"
+          }
+        }
+      }
+    },
+    "Panels": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bereiche"
+          }
+        }
+      }
+    },
+    "Photo": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto"
+          }
+        }
+      }
+    },
+    "Publish now": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt veröffentlichen"
+          }
+        }
+      }
+    },
+    "Published %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veröffentlicht %@"
+          }
+        }
+      }
+    },
+    "Published %@ by %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veröffentlicht %1$@ von %2$@"
+          }
+        }
+      }
+    },
+    "Published by": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veröffentlicht von"
+          }
+        }
+      }
+    },
+    "Ready": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bereit"
+          }
+        }
+      }
+    },
+    "Reminder lists": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erinnerungslisten"
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erinnerungen"
+          }
+        }
+      }
+    },
+    "Remove photo": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto entfernen"
+          }
+        }
+      }
+    },
+    "Restricted": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eingeschränkt"
+          }
+        }
+      }
+    },
+    "Results": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ergebnisse"
+          }
+        }
+      }
+    },
+    "Right column order": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reihenfolge der rechten Spalte"
+          }
+        }
+      }
+    },
+    "Set location": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ort festlegen"
+          }
+        }
+      }
+    },
+    "Show": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anzeigen"
+          }
+        }
+      }
+    },
+    "Show lists separately": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen getrennt anzeigen"
+          }
+        }
+      }
+    },
+    "Show lists separately puts up to three lists side by side under the agenda and includes reminders without a due date. Handy for to-dos, a meal plan and groceries.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Listen getrennt anzeigen“ zeigt bis zu drei Listen nebeneinander unter der Agenda und auch Erinnerungen ohne Fälligkeitsdatum. Praktisch für To-dos, einen Essensplan und Einkäufe."
+          }
+        }
+      }
+    },
+    "Sign in to iCloud in Settings to sync": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich in den Einstellungen bei iCloud an, um zu synchronisieren"
+          }
+        }
+      }
+    },
+    "Signed in": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angemeldet"
+          }
+        }
+      }
+    },
+    "Smart plug": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smarte Steckdose"
+          }
+        }
+      }
+    },
+    "Snapshots from the HomeKit cameras you choose, with a live view on selection.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standbilder der gewählten HomeKit-Kameras, mit Livebild bei Auswahl."
+          }
+        }
+      }
+    },
+    "Starting stream…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stream wird gestartet …"
+          }
+        }
+      }
+    },
+    "Stopped": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angehalten"
+          }
+        }
+      }
+    },
+    "Switch": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schalter"
+          }
+        }
+      }
+    },
+    "Sync": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronisierung"
+          }
+        }
+      }
+    },
+    "Temperature": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatur"
+          }
+        }
+      }
+    },
+    "That photo could not be converted.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Foto konnte nicht umgewandelt werden."
+          }
+        }
+      }
+    },
+    "That photo could not be read.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Foto konnte nicht gelesen werden."
+          }
+        }
+      }
+    },
+    "The Apple TV reads HomeKit directly. Choose here which cameras and accessories it shows.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Apple TV liest HomeKit direkt. Wähle hier, welche Kameras und Geräte es zeigt."
+          }
+        }
+      }
+    },
+    "The clock and the agenda are always shown.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uhr und Agenda werden immer angezeigt."
+          }
+        }
+      }
+    },
+    "Time format": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitformat"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute"
+          }
+        }
+      }
+    },
+    "Tomorrow": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morgen"
+          }
+        }
+      }
+    },
+    "Top to bottom on the Apple TV. Weather always sits under the clock, and the agenda fills the middle.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von oben nach unten auf dem Apple TV. Das Wetter steht immer unter der Uhr, die Agenda füllt die Mitte."
+          }
+        }
+      }
+    },
+    "Turn it on in Settings › Privacy & Security to show this on the board.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiviere ihn unter Einstellungen › Datenschutz & Sicherheit, um dies auf dem Board zu zeigen."
+          }
+        }
+      }
+    },
+    "Turn off All to show none, or tap an item to leave it out.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktiviere „Alle“, um nichts zu zeigen, oder tippe auf einen Eintrag, um ihn auszulassen."
+          }
+        }
+      }
+    },
+    "Turn off All to show none, or tap one to leave it out. Lookout publishes from whichever iPhone or iPad you last changed this on.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktiviere „Alle“, um nichts zu zeigen, oder tippe auf einen Eintrag, um ihn auszulassen. Lookout veröffentlicht von dem iPhone oder iPad, auf dem du dies zuletzt geändert hast."
+          }
+        }
+      }
+    },
+    "Unknown": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unbekannt"
+          }
+        }
+      }
+    },
+    "Unlocked": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entriegelt"
+          }
+        }
+      }
+    },
+    "Untitled": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohne Titel"
+          }
+        }
+      }
+    },
+    "Use photo": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto verwenden"
+          }
+        }
+      }
+    },
+    "Use this Apple TV's location": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standort dieses Apple TV verwenden"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        }
+      }
+    },
+    "Waiting for your iPhone": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warten auf dein iPhone"
+          }
+        }
+      }
+    },
+    "Wallpaper": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hintergrund"
+          }
+        }
+      }
+    },
+    "Weather": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wetter"
+          }
+        }
+      }
+    },
+    "Weather unavailable": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wetter nicht verfügbar"
+          }
+        }
+      }
+    },
+    "Window": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenster"
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestern"
+          }
+        }
+      }
+    },
+    "iCloud": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud"
+          }
+        }
+      }
+    },
+    "iCloud is restricted on this device": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud ist auf diesem Gerät eingeschränkt"
+          }
+        }
+      }
+    },
+    "iCloud ready · not published yet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud bereit · noch nicht veröffentlicht"
+          }
+        }
+      }
+    },
+    "iCloud status unknown": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Status unbekannt"
+          }
+        }
+      }
+    },
+    "until %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bis %@"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

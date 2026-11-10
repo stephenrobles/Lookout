@@ -47,7 +47,7 @@ struct HomePickerView: View {
     }
 
     @ViewBuilder
-    private func pickerSection(title: String, entries: [HomeAccessoryEntry], empty: String,
+    private func pickerSection(title: LocalizedStringKey, entries: [HomeAccessoryEntry], empty: LocalizedStringKey,
                                selection: Binding<[String]>) -> some View {
         Section {
             if entries.isEmpty {

@@ -12,10 +12,10 @@ nonisolated enum PanelKind: String, CaseIterable, Codable, Identifiable, Sendabl
 
     var title: String {
         switch self {
-        case .weather: "Weather"
-        case .cameras: "Cameras"
-        case .home: "Home"
-        case .reminders: "Reminders"
+        case .weather: String(localized: "Weather")
+        case .cameras: String(localized: "Cameras")
+        case .home: String(localized: "Home")
+        case .reminders: String(localized: "Reminders")
         }
     }
 
@@ -30,10 +30,10 @@ nonisolated enum PanelKind: String, CaseIterable, Codable, Identifiable, Sendabl
 
     var summary: String {
         switch self {
-        case .weather: "Current conditions, the next hours and the week ahead. Location is set on the Apple TV."
-        case .cameras: "Snapshots from the HomeKit cameras you choose, with a live view on selection."
-        case .home: "Lights, plugs, locks, doors, garage, sensors and temperatures from HomeKit."
-        case .reminders: "Incomplete reminders with a due date from the lists you choose."
+        case .weather: String(localized: "Current conditions, the next hours and the week ahead. Location is set on the Apple TV.")
+        case .cameras: String(localized: "Snapshots from the HomeKit cameras you choose, with a live view on selection.")
+        case .home: String(localized: "Lights, plugs, locks, doors, garage, sensors and temperatures from HomeKit.")
+        case .reminders: String(localized: "Incomplete reminders from the lists you choose, together or one section per list.")
         }
     }
 
@@ -53,12 +53,12 @@ nonisolated enum WallpaperPreset: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .midnight: "Midnight"
-        case .forest: "Forest"
-        case .dusk: "Dusk"
-        case .ocean: "Ocean"
-        case .graphite: "Graphite"
-        case .ember: "Ember"
+        case .midnight: String(localized: "Midnight")
+        case .forest: String(localized: "Forest")
+        case .dusk: String(localized: "Dusk")
+        case .ocean: String(localized: "Ocean")
+        case .graphite: String(localized: "Graphite")
+        case .ember: String(localized: "Ember")
         }
     }
 
@@ -122,6 +122,10 @@ final class BoardConfig {
 /// already meant "all", so there was no way to say "nothing".
 nonisolated enum SourceSelection {
     static let noneMarker = "none"
+    /// Rides along in the reminder-list selection to say "show each list as
+    /// its own section". Stored there so no new CloudKit field is needed;
+    /// `BoardConfig.selectedReminderListIDs` hides it from everyone else.
+    static let sectionsMarker = "sections"
 
     static func isAll(_ selection: [String]) -> Bool { selection.isEmpty }
     static func isNone(_ selection: [String]) -> Bool { selection == [noneMarker] }
@@ -208,8 +212,23 @@ extension BoardConfig {
     }
 
     var selectedReminderListIDs: [String] {
-        get { Self.split(selectedReminderListIDsRaw) }
-        set { selectedReminderListIDsRaw = Self.join(newValue); touch() }
+        get { Self.split(selectedReminderListIDsRaw).filter { $0 != SourceSelection.sectionsMarker } }
+        set {
+            let flag = showsReminderSections ? [SourceSelection.sectionsMarker] : []
+            selectedReminderListIDsRaw = Self.join(flag + newValue.filter { $0 != SourceSelection.sectionsMarker })
+            touch()
+        }
+    }
+
+    /// Show each reminder list as its own section on the board (up to
+    /// three), including reminders without a due date.
+    var showsReminderSections: Bool {
+        get { Self.split(selectedReminderListIDsRaw).contains(SourceSelection.sectionsMarker) }
+        set {
+            let ids = selectedReminderListIDs
+            selectedReminderListIDsRaw = Self.join((newValue ? [SourceSelection.sectionsMarker] : []) + ids)
+            touch()
+        }
     }
 
     var selectedCameraIDs: [String] {
@@ -309,6 +328,7 @@ nonisolated struct BoardSnapshot: Sendable {
     var selectedCameraIDs: [String] = []
     var selectedAccessoryIDs: [String] = []
     var maxReminders = 6
+    var reminderSections = false
     var showHomeAlerts = true
     var lastPublishedAt: Date? = nil
     var publishedFromDevice = ""
@@ -330,6 +350,7 @@ nonisolated struct BoardSnapshot: Sendable {
         selectedCameraIDs = config.selectedCameraIDs
         selectedAccessoryIDs = config.selectedAccessoryIDs
         maxReminders = config.maxReminders
+        reminderSections = config.showsReminderSections
         showHomeAlerts = config.showHomeAlerts
         lastPublishedAt = config.lastPublishedAt
         publishedFromDevice = config.publishedFromDevice
@@ -337,6 +358,12 @@ nonisolated struct BoardSnapshot: Sendable {
 
     func isEnabled(_ kind: PanelKind) -> Bool { enabledPanels.contains(kind) }
 
-    /// Enabled right-column panels in display order.
-    var rightColumn: [PanelKind] { panelOrder.filter { enabledPanels.contains($0) } }
+    /// Enabled right-column panels in display order. Reminders shown as
+    /// separate lists need the width of the middle column, so they leave it.
+    var rightColumn: [PanelKind] {
+        panelOrder.filter { enabledPanels.contains($0) && !($0 == .reminders && reminderSections) }
+    }
+
+    /// Reminder lists side by side under the agenda.
+    var showsReminderStrip: Bool { reminderSections && enabledPanels.contains(.reminders) }
 }

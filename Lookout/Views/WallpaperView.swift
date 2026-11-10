@@ -24,7 +24,7 @@ struct WallpaperView: View {
             Section("Photo") {
                 PhotosPicker(selection: $pickerItem, matching: .images, photoLibrary: .shared()) {
                     HStack {
-                        Label(config.wallpaperImageData == nil ? "Choose photo" : "Change photo",
+                        Label(config.wallpaperImageData == nil ? String(localized: "Choose photo") : String(localized: "Change photo"),
                               systemImage: "photo.on.rectangle")
                         Spacer()
                         if isImporting { ProgressView() }
@@ -84,7 +84,7 @@ struct WallpaperView: View {
                     ), in: 0...0.8, step: 0.05) { _ in config.touch() }
                 }
                 VStack(alignment: .leading) {
-                    LabeledContent("Blur", value: config.wallpaperBlur == 0 ? "Off" : "\(Int(config.wallpaperBlur))")
+                    LabeledContent("Blur", value: config.wallpaperBlur == 0 ? String(localized: "Off") : "\(Int(config.wallpaperBlur))")
                     Slider(value: Binding(
                         get: { config.wallpaperBlur },
                         set: { config.wallpaperBlur = $0 }
@@ -111,14 +111,14 @@ struct WallpaperView: View {
             defer { isImporting = false; pickerItem = nil }
             do {
                 guard let raw = try await item.loadTransferable(type: Data.self) else {
-                    importError = "That photo could not be read."
+                    importError = String(localized: "That photo could not be read.")
                     return
                 }
                 let prepared = await Task.detached(priority: .userInitiated) {
                     WallpaperImporter.prepare(raw)
                 }.value
                 guard let prepared else {
-                    importError = "That photo could not be converted."
+                    importError = String(localized: "That photo could not be converted.")
                     return
                 }
                 config.wallpaperImageData = prepared
@@ -144,9 +144,9 @@ private struct BoardPreview: View {
                     .clipped()
                 HStack(spacing: 28 * unit) {
                     VStack(alignment: .leading, spacing: 20 * unit) {
-                        Text("13:35")
+                        Text(verbatim: "13:35")
                             .font(.system(size: 170 * unit, weight: .bold, design: .rounded))
-                        Text("Wednesday, October 21")
+                        Text(verbatim: Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day()))
                             .font(.system(size: 40 * unit, weight: .medium))
                         card(unit).frame(maxHeight: .infinity)
                     }

@@ -10,17 +10,17 @@ nonisolated enum HomeAccessoryKind: String, Sendable, CaseIterable {
 
     var title: String {
         switch self {
-        case .lock: "Lock"
-        case .garageDoor: "Garage door"
-        case .door: "Door"
-        case .window: "Window"
-        case .contactSensor: "Contact sensor"
-        case .motionSensor: "Motion sensor"
-        case .temperature: "Temperature"
-        case .doorbell: "Doorbell"
-        case .light: "Light"
-        case .outlet: "Smart plug"
-        case .switch: "Switch"
+        case .lock: String(localized: "Lock")
+        case .garageDoor: String(localized: "Garage door")
+        case .door: String(localized: "Door")
+        case .window: String(localized: "Window")
+        case .contactSensor: String(localized: "Contact sensor")
+        case .motionSensor: String(localized: "Motion sensor")
+        case .temperature: String(localized: "Temperature")
+        case .doorbell: String(localized: "Doorbell")
+        case .light: String(localized: "Light")
+        case .outlet: String(localized: "Smart plug")
+        case .switch: String(localized: "Switch")
         }
     }
 

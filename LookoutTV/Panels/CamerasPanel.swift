@@ -14,14 +14,14 @@ struct CamerasPanel: View {
     private let tileSpacing: CGFloat = 16
 
     var body: some View {
-        BoardCard(title: "Cameras", symbolName: "video.fill") {
+        BoardCard(title: String(localized: "Cameras"), symbolName: "video.fill") {
             if isDenied {
-                message("HomeKit access is off for Lookout. Allow it in Settings › Apps › Lookout.")
+                message(String(localized: "HomeKit access is off for Lookout. Allow it in Settings › Apps › Lookout."))
             } else if !isReady {
-                message("Connecting to your home…")
+                message(String(localized: "Connecting to your home…"))
             } else if cameras.isEmpty {
-                message(noneChosen ? "No cameras chosen. Pick some in the Lookout app on your iPhone."
-                                   : "No HomeKit cameras in this home.")
+                message(noneChosen ? String(localized: "No cameras chosen. Pick some in the Lookout app on your iPhone.")
+                                   : String(localized: "No HomeKit cameras in this home."))
             } else if cameras.count <= 2 {
                 VStack(spacing: tileSpacing) {
                     ForEach(cameras) { camera in
@@ -110,7 +110,7 @@ private struct CameraTile: View {
                     VStack(spacing: 10) {
                         Image(systemName: feed.failed ? "video.slash" : "video")
                             .font(.system(size: 34))
-                        Text(feed.failed ? "No picture" : "Connecting…")
+                        Text(feed.failed ? String(localized: "No picture") : String(localized: "Connecting…"))
                             .font(BoardTheme.rowSecondary)
                     }
                     .foregroundStyle(.secondary)
@@ -177,7 +177,7 @@ struct LiveCameraView: View {
             } else {
                 VStack(spacing: 14) {
                     ProgressView()
-                    Text(feed.errorText ?? "Starting stream…")
+                    Text(feed.errorText ?? String(localized: "Starting stream…"))
                         .font(BoardTheme.row)
                         .foregroundStyle(.secondary)
                 }

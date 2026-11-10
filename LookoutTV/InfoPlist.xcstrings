@@ -1,0 +1,40 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "NSHomeKitUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout shows your HomeKit cameras, locks and sensors on the board."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout zeigt deine HomeKit-Kameras, Schlösser und Sensoren auf dem Board."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout uses this Apple TV's location to show local weather."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout verwendet den Standort dieses Apple TV, um das lokale Wetter zu zeigen."
+          }
+        }
+      }
+    }
+  }
+}

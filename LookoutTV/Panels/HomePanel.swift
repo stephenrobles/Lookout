@@ -12,14 +12,14 @@ struct HomePanel: View {
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
     var body: some View {
-        BoardCard(title: "Home", symbolName: "house.fill") {
+        BoardCard(title: String(localized: "Home"), symbolName: "house.fill") {
             if isDenied {
-                message("HomeKit access is off for Lookout. Allow it in Settings › Apps › Lookout.")
+                message(String(localized: "HomeKit access is off for Lookout. Allow it in Settings › Apps › Lookout."))
             } else if !isReady {
-                message("Connecting to your home…")
+                message(String(localized: "Connecting to your home…"))
             } else if items.isEmpty {
-                message(noneChosen ? "No accessories chosen. Pick some in the Lookout app on your iPhone."
-                                   : "No lights, plugs, locks, doors or sensors in your home.")
+                message(noneChosen ? String(localized: "No accessories chosen. Pick some in the Lookout app on your iPhone.")
+                                   : String(localized: "No lights, plugs, locks, doors or sensors in your home."))
             } else {
                 Color.clear.overlay(alignment: .topLeading) {
                     LazyVGrid(columns: columns, spacing: 14) {

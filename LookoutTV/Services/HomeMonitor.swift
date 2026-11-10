@@ -54,19 +54,19 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
             ]
             statuses = [
                 HomeStatusItem(id: "demo-1", name: "Back Door", room: "Kitchen", home: "Home", kind: .lock, symbolName: "lock.fill",
-                               stateText: "Locked", isAlert: false, isReachable: true, celsius: nil),
+                               stateText: String(localized: "Locked"), isAlert: false, isReachable: true, celsius: nil),
                 HomeStatusItem(id: "demo-2", name: "Front Door", room: "Entry", home: "Home", kind: .lock, symbolName: "lock.fill",
-                               stateText: "Locked", isAlert: false, isReachable: true, celsius: nil),
+                               stateText: String(localized: "Locked"), isAlert: false, isReachable: true, celsius: nil),
                 HomeStatusItem(id: "demo-3", name: "Laundry Door", room: "Laundry", home: "Home", kind: .lock, symbolName: "lock.open.fill",
-                               stateText: "Unlocked", isAlert: true, isReachable: true, celsius: nil),
+                               stateText: String(localized: "Unlocked"), isAlert: true, isReachable: true, celsius: nil),
                 HomeStatusItem(id: "demo-4", name: "Garage", room: "Garage", home: "Home", kind: .garageDoor, symbolName: "door.garage.closed",
-                               stateText: "Closed", isAlert: false, isReachable: true, celsius: nil),
+                               stateText: String(localized: "Closed"), isAlert: false, isReachable: true, celsius: nil),
                 HomeStatusItem(id: "demo-5", name: "Office", room: "Office", home: "Home", kind: .temperature, symbolName: "thermometer.medium",
                                stateText: "", isAlert: false, isReachable: true, celsius: 22.5),
                 HomeStatusItem(id: "demo-6", name: "Living Room Lamp", room: "Living Room", home: "Home", kind: .light, symbolName: "lightbulb.fill",
-                               stateText: "On · 60%", isAlert: false, isReachable: true, celsius: nil),
+                               stateText: String(localized: "On · \(60)%"), isAlert: false, isReachable: true, celsius: nil),
                 HomeStatusItem(id: "demo-7", name: "Christmas Tree", room: "Living Room", home: "Home", kind: .outlet, symbolName: "powerplug",
-                               stateText: "Off", isAlert: false, isReachable: true, celsius: nil),
+                               stateText: String(localized: "Off"), isAlert: false, isReachable: true, celsius: nil),
             ]
             isReady = true
             return
@@ -191,61 +191,61 @@ final class HomeMonitor: NSObject, HMHomeManagerDelegate, HMAccessoryDelegate {
         switch kind {
         case .lock:
             switch value(HMCharacteristicTypeCurrentLockMechanismState) as? Int {
-            case 0?: text = "Unlocked"; symbol = "lock.open.fill"; alert = true
-            case 1?: text = "Locked"; symbol = "lock.fill"
-            case 2?: text = "Jammed"; symbol = "lock.trianglebadge.exclamationmark.fill"; alert = true
-            default: text = "Unknown"; symbol = "lock"
+            case 0?: text = String(localized: "Unlocked"); symbol = "lock.open.fill"; alert = true
+            case 1?: text = String(localized: "Locked"); symbol = "lock.fill"
+            case 2?: text = String(localized: "Jammed"); symbol = "lock.trianglebadge.exclamationmark.fill"; alert = true
+            default: text = String(localized: "Unknown"); symbol = "lock"
             }
         case .garageDoor:
             switch value(HMCharacteristicTypeCurrentDoorState) as? Int {
-            case 0?: text = "Open"; symbol = "door.garage.open"; alert = true
-            case 1?: text = "Closed"; symbol = "door.garage.closed"
-            case 2?: text = "Opening"; symbol = "door.garage.open"
-            case 3?: text = "Closing"; symbol = "door.garage.closed"
-            case 4?: text = "Stopped"; symbol = "door.garage.open"; alert = true
-            default: text = "Unknown"
+            case 0?: text = String(localized: "Open"); symbol = "door.garage.open"; alert = true
+            case 1?: text = String(localized: "Closed"); symbol = "door.garage.closed"
+            case 2?: text = String(localized: "Opening"); symbol = "door.garage.open"
+            case 3?: text = String(localized: "Closing"); symbol = "door.garage.closed"
+            case 4?: text = String(localized: "Stopped"); symbol = "door.garage.open"; alert = true
+            default: text = String(localized: "Unknown")
             }
         case .door, .window:
             let position = value(HMCharacteristicTypeCurrentPosition) as? Int
             let isOpen = (position ?? 0) > 0
-            text = isOpen ? "Open" : "Closed"
+            text = isOpen ? String(localized: "Open") : String(localized: "Closed")
             alert = isOpen && kind == .door
             symbol = kind == .door
                 ? (isOpen ? "door.left.hand.open" : "door.left.hand.closed")
                 : (isOpen ? "window.vertical.open" : "window.vertical.closed")
         case .contactSensor:
             let detected = (value(HMCharacteristicTypeContactState) as? Int) == 0
-            text = detected ? "Closed" : "Open"
+            text = detected ? String(localized: "Closed") : String(localized: "Open")
             alert = !detected
             symbol = detected ? "sensor.fill" : "sensor"
         case .motionSensor:
             let motion = (value(HMCharacteristicTypeMotionDetected) as? Bool) ?? false
-            text = motion ? "Motion" : "Clear"
+            text = motion ? String(localized: "Motion") : String(localized: "Clear")
             symbol = motion ? "figure.walk.motion" : "figure.stand"
         case .temperature:
             celsius = value(HMCharacteristicTypeCurrentTemperature) as? Double
             text = ""
         case .doorbell:
-            text = "Ready"
+            text = String(localized: "Ready")
         case .light:
             let on = (value(HMCharacteristicTypePowerState) as? Bool) ?? false
             if on, let brightness = value(HMCharacteristicTypeBrightness) as? Int, brightness < 100 {
-                text = "On · \(brightness)%"
+                text = String(localized: "On · \(brightness)%")
             } else {
-                text = on ? "On" : "Off"
+                text = on ? String(localized: "On") : String(localized: "Off")
             }
             symbol = on ? "lightbulb.fill" : "lightbulb"
         case .outlet:
             let on = (value(HMCharacteristicTypePowerState) as? Bool) ?? false
-            text = on ? "On" : "Off"
+            text = on ? String(localized: "On") : String(localized: "Off")
             symbol = on ? "powerplug.fill" : "powerplug"
         case .switch:
             let on = (value(HMCharacteristicTypePowerState) as? Bool) ?? false
-            text = on ? "On" : "Off"
+            text = on ? String(localized: "On") : String(localized: "Off")
             symbol = on ? "lightswitch.on" : "lightswitch.off"
         }
         if !accessory.isReachable {
-            text = "No response"
+            text = String(localized: "No response")
             alert = false
         }
         return HomeStatusItem(id: accessory.lookoutKey(in: home), name: accessory.name, room: room, home: home.name,

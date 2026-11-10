@@ -37,12 +37,12 @@ struct ReminderListPickerView: View {
 }
 
 private struct SourcePickerList: View {
-    let title: String
+    let title: LocalizedStringKey
     let calendars: [EKCalendar]
     @Binding var selection: [String]
 
     private var grouped: [(source: String, calendars: [EKCalendar])] {
-        let groups = Dictionary(grouping: calendars) { $0.source?.title ?? "Other" }
+        let groups = Dictionary(grouping: calendars) { $0.source?.title ?? String(localized: "Other") }
         return groups.keys.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
             .map { (source: $0, calendars: groups[$0] ?? []) }
     }
@@ -80,7 +80,7 @@ private struct SourcePickerList: View {
                 Circle()
                     .fill(Color(hex: calendar.cgColor?.lookoutHex ?? "#0A84FF"))
                     .frame(width: 12, height: 12)
-                Text(title.isEmpty ? "Untitled" : title)
+                Text(title.isEmpty ? String(localized: "Untitled") : title)
                     .foregroundStyle(Color.primary)
                 Spacer()
                 if isOn {

@@ -43,7 +43,17 @@ nonisolated enum LookoutDemoData {
             context.insert(event)
         }
 
-        let reminders: [(String, Date?, Bool, String, String, Int)] = [
+        // `-LookoutSections` stages the "Show lists separately" layout.
+        let sections = CommandLine.arguments.contains("-LookoutSections")
+        config.showsReminderSections = sections
+        let reminders: [(String, Date?, Bool, String, String, Int)] = sections ? [
+            ("Return library books", at(0, 17), true, "To dos", "#FF9F0A", 1),
+            ("Send invoice to Circle", at(1, 9), true, "To dos", "#FF9F0A", 0),
+            ("Tacos", today, false, "Meal plan", "#30D158", 0),
+            ("Pasta bake", at(1, 0), false, "Meal plan", "#30D158", 0),
+            ("Oat milk", nil, false, "Groceries", "#0A84FF", 0),
+            ("Tortillas", nil, false, "Groceries", "#0A84FF", 0),
+        ] : [
             ("Return library books", at(0, 17), true, "Errands", "#FF9F0A", 1),
             ("Order filters for the fridge", today, false, "Home", "#0A84FF", 0),
             ("Send invoice to Circle", at(1, 9), true, "Work", "#30D158", 5),

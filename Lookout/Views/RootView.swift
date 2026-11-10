@@ -122,20 +122,20 @@ private struct SettingsList: View {
     }
 
     private var statusLine: String {
-        if LookoutStore.isDemo { return "Demo data (not synced)" }
+        if LookoutStore.isDemo { return String(localized: "Demo data (not synced)") }
         switch accountStatus {
         case .available?:
             if let date = config.lastPublishedAt {
                 let when = date.formatted(.relative(presentation: .named))
-                if let other = otherPublisher { return "Published \(when) by \(other)" }
-                return "Published \(when)"
+                if let other = otherPublisher { return String(localized: "Published \(when) by \(other)") }
+                return String(localized: "Published \(when)")
             }
-            return "iCloud ready · not published yet"
-        case .noAccount?: return "Sign in to iCloud in Settings to sync"
-        case .restricted?: return "iCloud is restricted on this device"
-        case .couldNotDetermine?, .temporarilyUnavailable?: return "Checking iCloud…"
-        case nil: return "Checking iCloud…"
-        @unknown default: return "iCloud status unknown"
+            return String(localized: "iCloud ready · not published yet")
+        case .noAccount?: return String(localized: "Sign in to iCloud in Settings to sync")
+        case .restricted?: return String(localized: "iCloud is restricted on this device")
+        case .couldNotDetermine?, .temporarilyUnavailable?: return String(localized: "Checking iCloud…")
+        case nil: return String(localized: "Checking iCloud…")
+        @unknown default: return String(localized: "iCloud status unknown")
         }
     }
 
@@ -155,7 +155,7 @@ private struct SettingsList: View {
                     LabeledContent("Calendars", value: calendarSummary)
                 }
                 Stepper(value: $config.daysAhead, in: 2...14) {
-                    LabeledContent("Days shown", value: "\(config.daysAhead)")
+                    LabeledContent("Days shown", value: config.daysAhead.formatted())
                 }
             } else {
                 accessRow(title: "Allow calendar access",
@@ -173,15 +173,15 @@ private struct SettingsList: View {
 
     /// "All", "None" or "2 of 5".
     private static func summary(_ selection: [String], of total: Int) -> String {
-        if SourceSelection.isAll(selection) { return "All" }
-        if SourceSelection.isNone(selection) { return "None" }
-        return "\(selection.count) of \(total)"
+        if SourceSelection.isAll(selection) { return String(localized: "All") }
+        if SourceSelection.isNone(selection) { return String(localized: "None") }
+        return String(localized: "\(selection.count) of \(total)")
     }
 
     // MARK: Reminders
 
     private var remindersSection: some View {
-        Section("Reminders") {
+        Section {
             if publisher.hasRemindersAccess {
                 NavigationLink {
                     ReminderListPickerView(config: config)
@@ -192,14 +192,24 @@ private struct SettingsList: View {
                     get: { config.maxReminders },
                     set: { config.maxReminders = $0; config.touch(); publisher.schedulePublish(after: 1, claim: true) }
                 ), in: 3...12) {
-                    LabeledContent("Items on board", value: "\(config.maxReminders)")
+                    LabeledContent("Items on board", value: config.maxReminders.formatted())
                 }
+                Toggle("Show lists separately", isOn: Binding(
+                    get: { config.showsReminderSections },
+                    set: { config.showsReminderSections = $0; publisher.schedulePublish(after: 1, claim: true) }
+                ))
             } else {
                 accessRow(title: "Allow reminders access",
                           detail: "Needed to show due reminders on the board.",
                           status: publisher.remindersStatus) {
                     Task { await publisher.requestRemindersAccess() }
                 }
+            }
+        } header: {
+            Text("Reminders")
+        } footer: {
+            if publisher.hasRemindersAccess {
+                Text("Show lists separately puts up to three lists side by side under the agenda and includes reminders without a due date. Handy for to-dos, a meal plan and groceries.")
             }
         }
     }
@@ -209,7 +219,7 @@ private struct SettingsList: View {
     }
 
     @ViewBuilder
-    private func accessRow(title: String, detail: String, status: EKAuthorizationStatusProxy,
+    private func accessRow(title: LocalizedStringKey, detail: LocalizedStringKey, status: EKAuthorizationStatusProxy,
                            action: @escaping () -> Void) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             if status.isDenied {
@@ -250,8 +260,8 @@ private struct SettingsList: View {
 
     private var panelSummary: String {
         let on = PanelKind.allCases.filter { config.isEnabled($0) }
-        if on.count == PanelKind.allCases.count { return "All" }
-        if on.isEmpty { return "None" }
+        if on.count == PanelKind.allCases.count { return String(localized: "All") }
+        if on.isEmpty { return String(localized: "None") }
         return on.map(\.title).joined(separator: ", ")
     }
 
@@ -267,7 +277,7 @@ private struct SettingsList: View {
                         .frame(width: 64, height: 36)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     Text(config.wallpaperUsesPhoto && config.wallpaperImageData != nil
-                         ? "Photo" : config.wallpaperPreset.title)
+                         ? String(localized: "Photo") : config.wallpaperPreset.title)
                 }
             }
         }
@@ -292,14 +302,14 @@ private struct SettingsList: View {
     private var homeSummary: String {
         let cameras = config.selectedCameraIDs
         let accessories = config.selectedAccessoryIDs
-        if SourceSelection.isAll(cameras) && SourceSelection.isAll(accessories) { return "All" }
-        if SourceSelection.isNone(cameras) && SourceSelection.isNone(accessories) { return "None" }
-        return "\(Self.count(cameras)) cameras · \(Self.count(accessories)) accessories"
+        if SourceSelection.isAll(cameras) && SourceSelection.isAll(accessories) { return String(localized: "All") }
+        if SourceSelection.isNone(cameras) && SourceSelection.isNone(accessories) { return String(localized: "None") }
+        return String(localized: "Cameras: \(Self.count(cameras)) · Accessories: \(Self.count(accessories))")
     }
 
     private static func count(_ selection: [String]) -> String {
-        if SourceSelection.isAll(selection) { return "All" }
-        if SourceSelection.isNone(selection) { return "No" }
+        if SourceSelection.isAll(selection) { return String(localized: "All") }
+        if SourceSelection.isNone(selection) { return String(localized: "None") }
         return "\(selection.count)"
     }
 

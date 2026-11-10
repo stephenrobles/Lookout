@@ -45,6 +45,10 @@ final class BoardPublisher {
     /// handful anyway.
     private let reminderHorizonDays = 45
     private let maxPublishedReminders = 40
+    /// In sections mode each list gets its own allowance, so a long
+    /// grocery list cannot crowd out the others.
+    private let maxPublishedPerSection = 15
+    private let maxPublishedSections = 6
 
     init() {
         changeObserver = NotificationCenter.default.addObserver(
@@ -236,7 +240,7 @@ final class BoardPublisher {
                 context.insert(record)
                 byKey[key] = record
             }
-            let title = event.title ?? "Untitled"
+            let title = event.title ?? String(localized: "Untitled")
             let location = event.location ?? ""
             let calendarTitle = event.calendar?.title ?? ""
             let hex = event.calendar?.cgColor?.lookoutHex ?? "#0A84FF"
@@ -286,17 +290,25 @@ final class BoardPublisher {
         let chosen = chosenCalendars(config.selectedReminderListIDs, for: .reminder)
         let predicate = store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil,
                                                               calendars: (chosen ?? []).isEmpty ? nil : chosen)
+        // Lists shown as sections (groceries, a meal plan) are mostly
+        // undated, so that mode keeps reminders without a due date too.
+        let sections = config.showsReminderSections
+        let untitled = String(localized: "Untitled")
         let rows: [ReminderRow] = chosen == nil ? [] : await withCheckedContinuation { continuation in
             store.fetchReminders(matching: predicate) { reminders in
                 let rows: [ReminderRow] = (reminders ?? []).compactMap { reminder in
-                    guard let components = reminder.dueDateComponents,
-                          let due = Calendar.current.date(from: components) else { return nil }
-                    guard due <= horizon else { return nil }
+                    let components = reminder.dueDateComponents
+                    let due = components.flatMap { Calendar.current.date(from: $0) }
+                    if let due {
+                        guard due <= horizon else { return nil }
+                    } else if !sections {
+                        return nil
+                    }
                     return ReminderRow(
                         identifier: reminder.calendarItemIdentifier,
-                        title: reminder.title ?? "Untitled",
+                        title: reminder.title ?? untitled,
                         dueDate: due,
-                        hasTime: components.hour != nil,
+                        hasTime: components?.hour != nil,
                         listTitle: reminder.calendar?.title ?? "",
                         colorHex: reminder.calendar?.cgColor?.lookoutHex ?? "#FF9F0A",
                         priority: reminder.priority,
@@ -306,8 +318,23 @@ final class BoardPublisher {
                 continuation.resume(returning: rows)
             }
         }
-        let sorted = rows.sorted { ($0.dueDate ?? .distantFuture) < ($1.dueDate ?? .distantFuture) }
-            .prefix(maxPublishedReminders)
+        let byDue: (ReminderRow, ReminderRow) -> Bool = { a, b in
+            switch (a.dueDate, b.dueDate) {
+            case let (x?, y?): x < y
+            case (_?, nil): true
+            case (nil, _?): false
+            case (nil, nil): a.title.localizedStandardCompare(b.title) == .orderedAscending
+            }
+        }
+        let sorted: [ReminderRow]
+        if sections {
+            let groups = Dictionary(grouping: rows, by: \.listTitle)
+            sorted = groups.keys.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+                .prefix(maxPublishedSections)
+                .flatMap { (groups[$0] ?? []).sorted(by: byDue).prefix(maxPublishedPerSection) }
+        } else {
+            sorted = Array(rows.sorted(by: byDue).prefix(maxPublishedReminders))
+        }
 
         let existing = (try? context.fetch(FetchDescriptor<ReminderItem>())) ?? []
         var byID: [String: ReminderItem] = [:]

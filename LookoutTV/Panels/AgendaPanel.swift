@@ -15,7 +15,7 @@ struct AgendaPanel: View {
     var body: some View {
         TimelineView(.everyMinute) { timeline in
             let now = timeline.date
-            BoardCard(title: "Agenda", symbolName: "calendar") {
+            BoardCard(title: String(localized: "Agenda"), symbolName: "calendar") {
                 HStack(spacing: 8) {
                     Circle().fill(Color.accentColor).frame(width: 10, height: 10)
                     Text(settings.timeText(now))
@@ -74,7 +74,7 @@ struct AgendaPanel: View {
 
     private func nowRule(_ now: Date) -> some View {
         HStack(spacing: 10) {
-            BoardLabel(text: "Now", color: Color.accentColor)
+            BoardLabel(text: String(localized: "Now"), color: Color.accentColor)
             Rectangle()
                 .fill(Color.accentColor.opacity(0.7))
                 .frame(height: 2)
@@ -117,8 +117,8 @@ struct AgendaPanel: View {
 
     private func dayTitle(_ day: Date, today: Date) -> String {
         let calendar = Calendar.current
-        if day == today { return "Today" }
-        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: today), day == tomorrow { return "Tomorrow" }
+        if day == today { return String(localized: "Today") }
+        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: today), day == tomorrow { return String(localized: "Tomorrow") }
         return day.formatted(.dateTime.weekday(.wide).month(.wide).day())
     }
 }
@@ -133,7 +133,7 @@ private struct EventRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            Text(event.isAllDay ? "All day" : settings.timeText(event.startDate))
+            Text(event.isAllDay ? String(localized: "All day") : settings.timeText(event.startDate))
                 .font(event.isAllDay ? BoardTheme.label : BoardTheme.rowStrong)
                 .monospacedDigit()
                 .foregroundStyle(isCurrent ? Color.accentColor : .primary)

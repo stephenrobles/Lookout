@@ -24,7 +24,7 @@ struct TVSettingsView: View {
                     NavigationLink {
                         LocationSearchView(settings: settings)
                     } label: {
-                        LabeledContent("Location", value: settings.hasLocation ? settings.locationName : "Not set")
+                        LabeledContent("Location", value: settings.hasLocation ? settings.locationName : String(localized: "Not set"))
                     }
                     Picker("Temperature", selection: $settings.temperature) {
                         ForEach(TVSettings.TemperatureChoice.allCases) { Text($0.title).tag($0) }
@@ -69,18 +69,18 @@ struct TVSettingsView: View {
     }
 
     private var accountText: String {
-        if LookoutStore.isDemo { return "Demo" }
+        if LookoutStore.isDemo { return String(localized: "Demo") }
         switch accountStatus {
-        case .available?: return "Signed in"
-        case .noAccount?: return "Not signed in"
-        case .restricted?: return "Restricted"
-        case nil, .couldNotDetermine?, .temporarilyUnavailable?: return "Checking…"
-        @unknown default: return "Unknown"
+        case .available?: return String(localized: "Signed in")
+        case .noAccount?: return String(localized: "Not signed in")
+        case .restricted?: return String(localized: "Restricted")
+        case nil, .couldNotDetermine?, .temporarilyUnavailable?: return String(localized: "Checking…")
+        @unknown default: return String(localized: "Unknown")
         }
     }
 
     private var lastPublished: String {
-        guard let date = snapshot.lastPublishedAt else { return "Never" }
+        guard let date = snapshot.lastPublishedAt else { return String(localized: "Never") }
         return date.formatted(.relative(presentation: .named))
     }
 }
@@ -144,17 +144,17 @@ struct LocationSearchView: View {
         defer { isSearching = false }
         do {
             results = try await CLGeocoder().geocodeAddressString(text)
-            if results.isEmpty { searchError = "No places found." }
+            if results.isEmpty { searchError = String(localized: "No places found.") }
         } catch {
             results = []
-            searchError = "Could not search right now."
+            searchError = String(localized: "Could not search right now.")
         }
     }
 
     private func useDeviceLocation() async {
         guard let location = await finder.locate() else { return }
         let placemark = try? await CLGeocoder().reverseGeocodeLocation(location).first
-        let name = placemark.map(Self.shortName) ?? "Current location"
+        let name = placemark.map(Self.shortName) ?? String(localized: "Current location")
         settings.setLocation(name: name, latitude: location.coordinate.latitude,
                              longitude: location.coordinate.longitude)
         dismiss()
@@ -168,7 +168,7 @@ struct LocationSearchView: View {
     }
 
     static func shortName(_ place: CLPlacemark) -> String {
-        place.locality ?? place.subAdministrativeArea ?? place.administrativeArea ?? place.name ?? "Location"
+        place.locality ?? place.subAdministrativeArea ?? place.administrativeArea ?? place.name ?? String(localized: "Location")
     }
 
     static func detail(_ place: CLPlacemark) -> String {
@@ -202,7 +202,7 @@ final class TVLocationFinder: NSObject, CLLocationManagerDelegate {
             case .authorizedWhenInUse, .authorizedAlways:
                 manager.requestLocation()
             default:
-                errorText = "Location access is off for Lookout. Allow it in Settings › Privacy & Security."
+                errorText = String(localized: "Location access is off for Lookout. Allow it in Settings › Privacy & Security.")
                 finish(nil)
             }
         }
@@ -221,7 +221,7 @@ final class TVLocationFinder: NSObject, CLLocationManagerDelegate {
         case .notDetermined:
             break
         default:
-            errorText = "Location access is off for Lookout."
+            errorText = String(localized: "Location access is off for Lookout.")
             finish(nil)
         }
     }
@@ -231,7 +231,7 @@ final class TVLocationFinder: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
-        errorText = "Could not find this Apple TV's location."
+        errorText = String(localized: "Could not find this Apple TV's location.")
         finish(nil)
     }
 }

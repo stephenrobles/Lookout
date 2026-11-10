@@ -66,9 +66,9 @@ struct ClockPanel: View {
     private var alertHeadline: String {
         let doors = alerts.filter { $0.kind == .lock || $0.kind == .door || $0.kind == .garageDoor || $0.kind == .contactSensor }
         if doors.count == alerts.count {
-            return doors.count == 1 ? "1 door needs attention" : "\(doors.count) doors need attention"
+            return doors.count == 1 ? String(localized: "1 door needs attention") : String(localized: "\(doors.count) doors need attention")
         }
-        return alerts.count == 1 ? "1 accessory needs attention" : "\(alerts.count) accessories need attention"
+        return alerts.count == 1 ? String(localized: "1 accessory needs attention") : String(localized: "\(alerts.count) accessories need attention")
     }
 
     private func nextUpText(_ now: Date) -> String {
@@ -76,22 +76,22 @@ struct ClockPanel: View {
         let today = events.filter { calendar.isDate($0.startDate, inSameDayAs: now) && !$0.isAllDay }
         if let current = today.first(where: { $0.startDate <= now && $0.endDate > now }) {
             let minutes = Int(current.endDate.timeIntervalSince(now) / 60)
-            return "Now: \(current.title) · \(Self.duration(minutes)) left"
+            return String(localized: "Now: \(current.title) · \(Self.duration(minutes)) left")
         }
         if let next = today.first(where: { $0.startDate > now }) {
             let minutes = Int(next.startDate.timeIntervalSince(now) / 60)
-            return "Next: \(next.title) in \(Self.duration(minutes))"
+            return String(localized: "Next: \(next.title) in \(Self.duration(minutes))")
         }
         let allDay = events.filter { calendar.isDate($0.startDate, inSameDayAs: now) && $0.isAllDay }
         if today.isEmpty, allDay.isEmpty {
-            return "Nothing scheduled today"
+            return String(localized: "Nothing scheduled today")
         }
-        return "Nothing more today"
+        return String(localized: "Nothing more today")
     }
 
     private static func duration(_ minutes: Int) -> String {
-        if minutes < 60 { return "\(max(minutes, 1)) min" }
+        if minutes < 60 { return String(localized: "\(max(minutes, 1)) min") }
         let hours = minutes / 60, rest = minutes % 60
-        return rest == 0 ? "\(hours) h" : "\(hours) h \(rest) min"
+        return rest == 0 ? String(localized: "\(hours) h") : String(localized: "\(hours) h \(rest) min")
     }
 }

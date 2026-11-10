@@ -35,8 +35,15 @@ struct BoardView: View {
                 }
                 .frame(width: BoardTheme.leftWidth)
 
-                AgendaPanel(events: events, settings: settings, hasConfig: snapshot.hasConfig)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                VStack(spacing: BoardTheme.gutter) {
+                    AgendaPanel(events: events, settings: settings, hasConfig: snapshot.hasConfig)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    if snapshot.showsReminderStrip {
+                        RemindersPanel(reminders: reminders, limit: snapshot.maxReminders,
+                                       sections: true, settings: settings)
+                            .frame(height: 340)
+                    }
+                }
 
                 let right = snapshot.rightColumn
                 if !right.isEmpty {

@@ -13,9 +13,9 @@ final class TVSettings {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .automatic: "Automatic"
-            case .fahrenheit: "Fahrenheit"
-            case .celsius: "Celsius"
+            case .automatic: String(localized: "Automatic")
+            case .fahrenheit: String(localized: "Fahrenheit")
+            case .celsius: String(localized: "Celsius")
             }
         }
     }
@@ -25,9 +25,9 @@ final class TVSettings {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .automatic: "Automatic"
-            case .twelveHour: "12-hour"
-            case .twentyFourHour: "24-hour"
+            case .automatic: String(localized: "Automatic")
+            case .twelveHour: String(localized: "12-hour")
+            case .twentyFourHour: String(localized: "24-hour")
             }
         }
     }

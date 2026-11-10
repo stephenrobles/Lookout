@@ -7,7 +7,7 @@ struct WeatherPanel: View {
     let openSettings: () -> Void
 
     var body: some View {
-        BoardCard(title: settings.hasLocation ? settings.locationName : "Weather", symbolName: "location.fill") {
+        BoardCard(title: settings.hasLocation ? settings.locationName : String(localized: "Weather"), symbolName: "location.fill") {
             if !settings.hasLocation {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Choose a location to show the weather here.")
@@ -59,8 +59,8 @@ struct WeatherPanel: View {
                             .minimumScaleFactor(0.8)
                     }
                     .font(BoardTheme.rowStrong)
-                    detail("Feels \(settings.temperatureText(celsius: snapshot.feelsLikeCelsius))")
-                    detail("Humidity \(Int((snapshot.humidity * 100).rounded()))%")
+                    detail(String(localized: "Feels \(settings.temperatureText(celsius: snapshot.feelsLikeCelsius))"))
+                    detail(String(localized: "Humidity \(Int((snapshot.humidity * 100).rounded()))%"))
                 }
                 Spacer(minLength: 0)
             }
@@ -94,7 +94,7 @@ struct WeatherPanel: View {
         HStack(spacing: 0) {
             ForEach(Array(snapshot.hourly.enumerated()), id: \.element.id) { index, hour in
                 VStack(spacing: 6) {
-                    BoardLabel(text: index == 0 ? "Now" : settings.hourText(hour.date))
+                    BoardLabel(text: index == 0 ? String(localized: "Now") : settings.hourText(hour.date))
                     Image(systemName: hour.symbolName)
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 28))
@@ -117,7 +117,7 @@ struct WeatherPanel: View {
         HStack(spacing: 0) {
             ForEach(Array(snapshot.daily.enumerated()), id: \.element.id) { index, day in
                 VStack(spacing: 6) {
-                    BoardLabel(text: index == 0 ? "Today" : day.date.formatted(.dateTime.weekday(.abbreviated)))
+                    BoardLabel(text: index == 0 ? String(localized: "Today") : day.date.formatted(.dateTime.weekday(.abbreviated)))
                     Image(systemName: day.symbolName)
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 28))
@@ -142,11 +142,11 @@ struct WeatherPanel: View {
                 AsyncImage(url: url) { image in
                     image.resizable().scaledToFit()
                 } placeholder: {
-                    Text(" Weather")
+                    Text(verbatim: " Weather")
                 }
                 .frame(height: 18)
             } else {
-                Text(" Weather")
+                Text(verbatim: " Weather")
             }
         }
         .font(.system(size: 16, weight: .medium))
