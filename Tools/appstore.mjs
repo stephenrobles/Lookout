@@ -10,9 +10,10 @@
 //   release      automatic release after approval, or --manual to release by hand
 //   testflight   create the "Primary Tech" external group if needed, beta info, What to Test, add builds, submit for beta review
 //   status       print versions, builds and review state
+//   profiles     reinstall the App Store provisioning profiles from the developer portal (--recreate: rebuild them for the current certificates)
 // Auth: App Store Connect API key at ~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8.
 import { createPrivateKey, sign, createHash } from "node:crypto";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -373,7 +374,46 @@ async function testflight() {
   }
 }
 
-const commands = { metadata, screenshots, attach, submit, status, prepare, cancel, release, testflight, verify };
+/// Reinstalls the two App Store provisioning profiles from the developer portal. Xcode's profile
+/// folder gets emptied now and then (an Xcode reinstall, another project's automatic signing), and
+/// the manual-signing export in Tools/release.sh then fails with "No profiles ... are installed".
+/// With --recreate the portal profiles are deleted and made again with every current distribution
+/// certificate, for when the export says the profile "doesn't include signing certificate" (the
+/// certificate in the keychain was replaced). App Store profiles only matter at export time, so
+/// replacing them does not affect anything already shipped.
+async function profiles() {
+  const dir = join(homedir(), "Library/Developer/Xcode/UserData/Provisioning Profiles");
+  mkdirSync(dir, { recursive: true });
+  const recreate = process.argv.includes("--recreate");
+  const kinds = [["Lookout App Store iOS", "IOS_APP_STORE"], ["Lookout App Store tvOS", "TVOS_APP_STORE"]];
+  let bundle, certs;
+  if (recreate) {
+    bundle = (await get(`/bundleIds?filter[identifier]=${BUNDLE_ID}&limit=10`)).data.find((b) => b.attributes.identifier === BUNDLE_ID);
+    if (!bundle) throw new Error(`bundle ID ${BUNDLE_ID} not found`);
+    certs = (await all("/certificates?limit=200")).filter((c) => c.attributes.certificateType === "DISTRIBUTION");
+    if (!certs.length) throw new Error("no Apple Distribution certificate in the portal");
+    console.log(`certificates: ${certs.map((c) => `${c.id} (expires ${c.attributes.expirationDate.slice(0, 10)})`).join(", ")}`);
+  }
+  for (const [name, type] of kinds) {
+    const found = (await get(`/profiles?filter[name]=${encodeURIComponent(name)}&limit=10`)).data.filter((x) => x.attributes.name === name);
+    let profile = found.find((x) => x.attributes.profileState === "ACTIVE");
+    if (recreate) {
+      for (const old of found) {
+        await del(`/profiles/${old.id}`);
+        try { unlinkSync(join(dir, `${old.attributes.uuid}.mobileprovision`)); } catch {}
+      }
+      profile = (await post("/profiles", { data: { type: "profiles", attributes: { name, profileType: type }, relationships: {
+        bundleId: { data: { type: "bundleIds", id: bundle.id } },
+        certificates: { data: certs.map((c) => ({ type: "certificates", id: c.id })) } } } })).data;
+      console.log(`${name}: recreated in the portal`);
+    }
+    if (!profile) { console.log(`${name}: no active profile in the portal (state: ${found.map((x) => x.attributes.profileState).join(", ") || "missing"})`); continue; }
+    writeFileSync(join(dir, `${profile.attributes.uuid}.mobileprovision`), Buffer.from(profile.attributes.profileContent, "base64"));
+    console.log(`${name}: installed ${profile.attributes.uuid} (expires ${profile.attributes.expirationDate.slice(0, 10)})`);
+  }
+}
+
+const commands = { metadata, screenshots, attach, submit, status, prepare, cancel, release, testflight, verify, profiles };
 const cmd = commands[process.argv[2]];
 if (!cmd) { console.error("usage: node Tools/appstore.mjs status|metadata|attach|release|testflight|submit|screenshots|prepare|cancel [--platform ios|mac|all]"); process.exit(1); }
 cmd().catch((e) => { console.error(e.message); process.exit(1); });

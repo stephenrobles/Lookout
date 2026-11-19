@@ -39,7 +39,7 @@ xcrun simctl launch booted fm.beard.Lookout -LookoutDemo
 
 `Tools/release.sh` archives both targets and uploads them. It is deliberately not the usual automatic-signing flow: on this Mac xcodebuild can neither use Xcode's account nor provision through the API key, so it archives unsigned, ad-hoc signs with Production entitlements, and exports with manual signing against the App Store profiles "Lookout App Store iOS" and "Lookout App Store tvOS" (created through the App Store Connect API, installed under `~/Library/Developer/Xcode/UserData/Provisioning Profiles`). The upload step authenticates with the shared API key in `~/.appstoreconnect/private_keys`.
 
-Bump `CURRENT_PROJECT_VERSION` in the project before each upload. If App ID capabilities change, recreate the two profiles first (the profiles embed the capability list).
+Bump `CURRENT_PROJECT_VERSION` in the project before each upload. If the export fails with "No profiles ... are installed", run `node Tools/appstore.mjs profiles` to reinstall them from the portal; if it says the profile "doesn't include signing certificate", the distribution certificate in the keychain was replaced, and `node Tools/appstore.mjs profiles --recreate` rebuilds both profiles for the current certificates. When `xcode-select -p` points at the command line tools, export `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` first. If App ID capabilities change, recreate the two profiles first (the profiles embed the capability list).
 
 ## Building for the simulator
 
