@@ -317,6 +317,16 @@
         }
       }
     },
+    "Checking iCloud for your board…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud wird nach deinem Board durchsucht …"
+          }
+        }
+      }
+    },
     "Checking iCloud…": {
       "localizations": {
         "de": {
@@ -537,6 +547,16 @@
         }
       }
     },
+    "Download problem: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Problem beim Laden: %@"
+          }
+        }
+      }
+    },
     "Dusk": {
       "localizations": {
         "de": {
@@ -723,6 +743,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Blockiert"
+          }
+        }
+      }
+    },
+    "Last check with iCloud": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzte Prüfung mit iCloud"
           }
         }
       }
@@ -983,6 +1013,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keine Geräte ausgewählt. Wähle welche in der Lookout-App auf deinem iPhone."
+          }
+        }
+      }
+    },
+    "No board in iCloud yet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch kein Board in iCloud"
           }
         }
       }
@@ -1307,6 +1347,16 @@
         }
       }
     },
+    "Reload from iCloud": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus iCloud neu laden"
+          }
+        }
+      }
+    },
     "Reminder lists": {
       "localizations": {
         "de": {
@@ -1537,6 +1587,26 @@
         }
       }
     },
+    "The saved copy on this Apple TV is behind, so the board is read directly from iCloud. The copy is rebuilt the next time Lookout opens.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die gespeicherte Kopie auf diesem Apple TV ist nicht aktuell, daher wird das Board direkt aus iCloud gelesen. Die Kopie wird beim nächsten Öffnen von Lookout neu aufgebaut."
+          }
+        }
+      }
+    },
+    "This device is not signed in to iCloud.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Gerät ist nicht bei iCloud angemeldet."
+          }
+        }
+      }
+    },
     "Time format": {
       "localizations": {
         "de": {
@@ -1637,6 +1707,26 @@
         }
       }
     },
+    "Upload problem: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Problem beim Hochladen: %@"
+          }
+        }
+      }
+    },
+    "Uploaded to iCloud %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In iCloud hochgeladen: %@"
+          }
+        }
+      }
+    },
     "Use photo": {
       "localizations": {
         "de": {
@@ -1727,12 +1817,62 @@
         }
       }
     },
+    "Your iCloud storage is full.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein iCloud-Speicher ist voll."
+          }
+        }
+      }
+    },
     "iCloud": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud"
+          }
+        }
+      }
+    },
+    "iCloud could not be reached.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud ist nicht erreichbar."
+          }
+        }
+      }
+    },
+    "iCloud has no board yet. Open Lookout on your iPhone and tap Publish now. If nothing arrives, check that the iPhone uses the same iCloud account and that iCloud storage is not full.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In iCloud ist noch kein Board. Öffne Lookout auf deinem iPhone und tippe auf „Jetzt veröffentlichen“. Wenn nichts ankommt, prüfe, ob das iPhone denselben iCloud-Account verwendet und der iCloud-Speicher nicht voll ist."
+          }
+        }
+      }
+    },
+    "iCloud is busy. It will try again shortly.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud ist ausgelastet. Es wird in Kürze erneut versucht."
+          }
+        }
+      }
+    },
+    "iCloud is not available on this Apple TV.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud ist auf diesem Apple TV nicht verfügbar."
           }
         }
       }

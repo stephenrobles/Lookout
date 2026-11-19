@@ -12,6 +12,7 @@ struct LookoutApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        CloudSyncMonitor.shared.start()
         if LookoutStore.isDemo {
             LookoutDemoData.seed(into: LookoutStore.container.mainContext)
         } else if LookoutSchemaSeed.isRequested {

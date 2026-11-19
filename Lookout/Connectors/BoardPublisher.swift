@@ -150,6 +150,15 @@ final class BoardPublisher {
         defer { isPublishing = false }
         refreshStatus()
 
+        // Right after launch the store may not have caught up with iCloud.
+        // An automatic publish that ran first worked from stale records: it
+        // could miss that another device owns publishing, or publish a blank
+        // config in place of the real one. A change the user just made here
+        // does not wait.
+        if !claim {
+            await CloudSyncMonitor.shared.waitForInitialImport(timeout: 10)
+        }
+
         let context = LookoutStore.container.mainContext
         let config = Self.dedupedConfig(in: context)
 
@@ -169,9 +178,10 @@ final class BoardPublisher {
             await publishReminders(config: config, context: context)
         }
 
+        // `updatedAt` is left alone: it records edits, not publishes, and is
+        // what decides which record wins when there are two.
         config.lastPublishedAt = .now
         config.publishedFromDevice = Self.deviceName
-        config.touch()
         do {
             try context.save()
             lastError = nil
@@ -182,17 +192,17 @@ final class BoardPublisher {
     }
 
     /// Two devices can each create a config before CloudKit merges. Keep the
-    /// newest and drop the rest so the TV never reads a stale duplicate.
+    /// one a person edited last (see `BoardConfig.ranked`) and drop the rest
+    /// so the TV never reads a stale duplicate.
     private static func dedupedConfig(in context: ModelContext) -> BoardConfig {
-        let all = (try? context.fetch(FetchDescriptor<BoardConfig>(
-            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]))) ?? []
-        guard let newest = all.first else {
+        let all = BoardConfig.fetchAllRanked(in: context)
+        guard let best = all.first else {
             return BoardConfig.fetchOrCreate(in: context)
         }
         for extra in all.dropFirst() {
             context.delete(extra)
         }
-        return newest
+        return best
     }
 
     private func publishEvents(config: BoardConfig, context: ModelContext) {

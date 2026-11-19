@@ -6,8 +6,12 @@ import SwiftUI
 /// Content choices stay on the iPhone.
 struct TVSettingsView: View {
     let snapshot: BoardSnapshot
+    var source = BoardSource.store
     @State private var settings = TVSettings.shared
     @State private var accountStatus: CKAccountStatus?
+    @State private var reader = CloudBoardReader.shared
+    @State private var sync = CloudSyncMonitor.shared
+    @State private var isReloading = false
 
     var body: some View {
         ZStack {
@@ -54,6 +58,24 @@ struct TVSettingsView: View {
                     if !snapshot.publishedFromDevice.isEmpty {
                         LabeledContent("Published by", value: snapshot.publishedFromDevice)
                     }
+                    if !LookoutStore.isDemo {
+                        LabeledContent("Last check with iCloud", value: checkText)
+                        if let problem {
+                            Text(problem)
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                        Button {
+                            reload()
+                        } label: {
+                            HStack {
+                                Label("Reload from iCloud", systemImage: "arrow.clockwise.icloud")
+                                Spacer()
+                                if isReloading { ProgressView() }
+                            }
+                        }
+                        .disabled(isReloading)
+                    }
                 } header: {
                     Text("Sync")
                 } footer: {
@@ -82,6 +104,46 @@ struct TVSettingsView: View {
     private var lastPublished: String {
         guard let date = snapshot.lastPublishedAt else { return String(localized: "Never") }
         return date.formatted(.relative(presentation: .named))
+    }
+
+    /// What iCloud itself said the last time it was asked, as opposed to
+    /// what this Apple TV has stored.
+    private var checkText: String {
+        switch reader.state {
+        case .idle: return String(localized: "Checking…")
+        case .empty: return String(localized: "No board in iCloud yet")
+        case .noAccount: return String(localized: "Not signed in")
+        case .failed(let message): return message
+        case .current:
+            guard let date = reader.lastChecked else { return String(localized: "Checking…") }
+            return date.formatted(.relative(presentation: .named))
+        }
+    }
+
+    /// The one thing worth telling the person, if anything is wrong.
+    private var problem: String? {
+        if reader.state == .empty {
+            return String(localized: "iCloud has no board yet. Open Lookout on your iPhone and tap Publish now. If nothing arrives, check that the iPhone uses the same iCloud account and that iCloud storage is not full.")
+        }
+        if source == .direct {
+            return String(localized: "The saved copy on this Apple TV is behind, so the board is read directly from iCloud. The copy is rebuilt the next time Lookout opens.")
+        }
+        if let error = sync.importError ?? sync.setupError {
+            return String(localized: "Download problem: \(error)")
+        }
+        return nil
+    }
+
+    /// Reads everything from iCloud again now and discards the saved copy
+    /// at the next launch. Nothing on the iPhone is touched.
+    private func reload() {
+        isReloading = true
+        LookoutStore.requestResetOnNextLaunch()
+        Task {
+            await reader.refresh(full: true)
+            accountStatus = try? await CKContainer(identifier: LookoutStore.cloudContainerIdentifier).accountStatus()
+            isReloading = false
+        }
     }
 }
 

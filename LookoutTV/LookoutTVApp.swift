@@ -10,6 +10,7 @@ struct LookoutTVApp: App {
     @UIApplicationDelegateAdaptor(TVAppDelegate.self) private var appDelegate
 
     init() {
+        CloudSyncMonitor.shared.start()
         if LookoutStore.isDemo {
             LookoutDemoData.seed(into: LookoutStore.container.mainContext)
         }
@@ -29,7 +30,8 @@ struct LookoutTVApp: App {
 }
 
 /// CloudKit's silent "data changed" pushes are only delivered to apps that
-/// registered; the mirroring container imports on its own once one lands.
+/// registered; the mirroring container imports on its own once one lands,
+/// and the direct reader takes the same cue.
 final class TVAppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -42,6 +44,9 @@ final class TVAppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        completionHandler(.newData)
+        Task { @MainActor in
+            await CloudBoardReader.shared.refresh()
+            completionHandler(.newData)
+        }
     }
 }

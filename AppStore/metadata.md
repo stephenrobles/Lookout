@@ -53,6 +53,9 @@ dashboard,status board,apple tv,calendar,agenda,reminders,weather,homekit,camera
 **Marketing URL:** https://beardfm.app/lookout/
 **Privacy Policy URL:** https://beardfm.app/lookout/privacy/
 
+**What's New (1.5):**
+Sync between iPhone and Apple TV is more dependable. The Apple TV now also reads your board straight from iCloud, so it keeps up even when its saved copy falls behind or is cleared by tvOS, and it repairs that copy on its own. It remembers your layout and chosen cameras instead of falling back to showing everything while it catches up. Settings on the Apple TV shows when iCloud was last checked, says what is wrong if something is, and has a Reload from iCloud button. On the iPhone, reinstalling Lookout or adding a second device no longer replaces your board with a blank one, and the status card now tells you when the upload to iCloud succeeded or why it did not.
+
 **What's New (1.4):**
 Lookout now speaks German on iPhone, iPad and Apple TV. A new "Show lists separately" switch in the Reminders settings puts up to three reminder lists side by side under the agenda, each with its own heading, and includes reminders without a due date. Use it for to-dos, a meal plan and groceries.
 
@@ -66,6 +69,8 @@ The Home panel now shows your lights, smart plugs and switches alongside locks, 
 Choosing specific cameras or home accessories on your iPhone now works on the Apple TV. The TV matches your picks by name, so the Cameras and Home panels show exactly what you chose instead of going empty. Changes made in the Home picker also reach the TV right away.
 
 **What to Test:**
+Build 10 (1.5) is about sync (Sven H.'s report: the Apple TV showed "Last update from iPhone: Never" and went back to all cameras). Apple TV: open Settings (gear, top right) and check the Sync section shows a recent "Last check with iCloud" time and no orange message; change something on the iPhone and confirm the board follows within a minute or two; try Reload from iCloud. If you chose specific cameras, confirm the others never appear, including right after launching the app. iPhone: the status card should read "Uploaded to iCloud" shortly after Publish now. If you can, delete Lookout from the iPhone, reinstall it, and confirm your panels, wallpaper and selections come back instead of defaults.
+
 Build 9 (1.4) adds German and separate reminder lists. German: set the iPhone and Apple TV language to German and look for anything left in English or awkwardly worded. Lists: on the iPhone open Reminders › Lists and choose two or three lists, then turn on "Show lists separately"; the Apple TV should move Reminders under the agenda with one column per list, including items without a due date. Turn it off and confirm the single Reminders panel returns to the right column.
 
 Build 7 (1.3) fixes the pickers, multi-device publishing and camera tiles. Pickers: on the iPhone open Home, turn off All under Cameras and confirm every checkmark disappears and the Apple TV's Cameras panel reads "No cameras chosen"; tap one camera and confirm only it comes back on the TV; with All on, tap one camera and confirm the others stay checked and the TV drops just that one. Do the same under Accessories, Calendars and Reminder lists. Multi-device: if you run Lookout on two iPhones or iPads, change a setting on one; the main screen on the other should read "Published … by iPhone XXXX" with a note that the first device publishes, and the agenda on the TV should stop flipping between the two devices' calendars. Cameras: tiles should show the camera's own proportions (cropped, not stretched), the full-screen view letterboxes, and a camera that never gave a still before should show a live picture with a red dot after a few seconds.

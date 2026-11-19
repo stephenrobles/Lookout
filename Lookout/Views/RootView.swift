@@ -5,12 +5,12 @@ import SwiftUI
 /// The companion app's single screen: what the board shows, and how.
 struct RootView: View {
     @Environment(\.modelContext) private var context
-    @Query(sort: \BoardConfig.updatedAt, order: .reverse) private var configs: [BoardConfig]
+    @Query private var configs: [BoardConfig]
     @State private var path = NavigationPath()
 
     var body: some View {
         NavigationStack(path: $path) {
-            if let config = configs.first {
+            if let config = BoardConfig.ranked(configs).first {
                 SettingsList(config: config)
                     .navigationDestination(for: StagedScreen.self) { screen in
                         switch screen {
@@ -26,8 +26,14 @@ struct RootView: View {
                         }
                     }
             } else {
-                ProgressView()
-                    .task { _ = BoardConfig.fetchOrCreate(in: context) }
+                // A new install starts with an empty store. The board set up
+                // earlier, or on another device, is still on its way from
+                // iCloud, so give it a moment before starting a blank one.
+                ProgressView("Checking iCloud for your board…")
+                    .task {
+                        await CloudSyncMonitor.shared.waitForInitialImport(timeout: 20)
+                        _ = BoardConfig.fetchOrCreate(in: context)
+                    }
             }
         }
     }
@@ -48,6 +54,7 @@ enum StagedScreen: String, Hashable {
 private struct SettingsList: View {
     @Bindable var config: BoardConfig
     @State private var publisher = BoardPublisher.shared
+    @State private var sync = CloudSyncMonitor.shared
     @State private var accountStatus: CKAccountStatus?
 
     var body: some View {
@@ -86,6 +93,21 @@ private struct SettingsList: View {
                     Label(error, systemImage: "exclamationmark.triangle")
                         .font(.footnote)
                         .foregroundStyle(.orange)
+                }
+                // Publishing saves on this device; the upload to iCloud is a
+                // separate step that can fail on its own (full storage, no
+                // account), and the Apple TV only ever sees what was uploaded.
+                if accountStatus == .noAccount {
+                    EmptyView()
+                } else if let error = sync.exportError ?? sync.setupError {
+                    Label("Upload problem: \(error)", systemImage: "exclamationmark.icloud")
+                        .font(.footnote)
+                        .foregroundStyle(.orange)
+                } else if let uploaded = sync.lastExport {
+                    Label("Uploaded to iCloud \(uploaded.formatted(.relative(presentation: .named)))",
+                          systemImage: "checkmark.icloud")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
                 if let other = otherPublisher {
                     Label("\(other) publishes the calendars and reminders. Change something here or tap Publish now to publish from this \(UIDevice.current.model) instead.",

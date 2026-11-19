@@ -87,9 +87,12 @@ extension HMAccessory {
 
     nonisolated static func lookoutKey(home: String, accessory: String) -> String {
         // Selections are stored comma-separated, so keep commas out of the key.
+        // Stored keys are also trimmed when read back, so trim the same way
+        // here or a name with a stray space at either end never matches.
         [home, accessory]
             .map { $0.replacingOccurrences(of: ",", with: "%2C") }
             .joined(separator: "|")
+            .trimmingCharacters(in: .whitespaces)
     }
 }
 #endif

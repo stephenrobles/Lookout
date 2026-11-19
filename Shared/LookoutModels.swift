@@ -46,7 +46,7 @@ nonisolated enum PanelKind: String, CaseIterable, Codable, Identifiable, Sendabl
 
 /// Built-in gradient wallpapers. Available on both devices; a photo picked on
 /// the iPhone replaces them when `BoardConfig.wallpaperUsesPhoto` is on.
-nonisolated enum WallpaperPreset: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum WallpaperPreset: String, CaseIterable, Identifiable, Codable, Sendable {
     case midnight, forest, dusk, ocean, graphite, ember
 
     var id: String { rawValue }
@@ -109,6 +109,9 @@ final class BoardConfig {
 
     var lastPublishedAt: Date? = nil
     var publishedFromDevice: String = ""
+    /// When a person last changed a setting. Publishing does not move it, so
+    /// a record nobody has edited (`distantPast`) can never outrank one that
+    /// somebody set up.
     var updatedAt: Date = Date.distantPast
 
     init() {}
@@ -251,20 +254,37 @@ extension BoardConfig {
         enabledPanels = set
     }
 
-    /// The single config record, newest first if duplicates ever appear
-    /// (two devices racing on first launch, for example).
+    /// The newer of the last edit and the last publish: how recent this
+    /// record's content is, whichever device wrote it.
+    var freshness: Date { max(updatedAt, lastPublishedAt ?? .distantPast) }
+
+    /// Duplicates can exist for a while (a reinstall or a second device
+    /// creates its own record before iCloud delivers the real one). Best
+    /// first: the one a person edited most recently, then the one published
+    /// most recently. Both apps use this order, so they agree on which
+    /// record is the board.
+    static func ranked(_ configs: [BoardConfig]) -> [BoardConfig] {
+        configs.sorted { a, b in
+            if a.updatedAt != b.updatedAt { return a.updatedAt > b.updatedAt }
+            return (a.lastPublishedAt ?? .distantPast) > (b.lastPublishedAt ?? .distantPast)
+        }
+    }
+
+    static func fetchAllRanked(in context: ModelContext) -> [BoardConfig] {
+        ranked((try? context.fetch(FetchDescriptor<BoardConfig>())) ?? [])
+    }
+
     static func fetchCurrent(in context: ModelContext) -> BoardConfig? {
-        var descriptor = FetchDescriptor<BoardConfig>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        fetchAllRanked(in: context).first
     }
 
     /// Fetches the config, creating one when the store has none. Only the
-    /// iPhone app calls this; the TV never creates records.
+    /// iPhone app calls this; the TV never creates records. A new record is
+    /// left unstamped: stamping it "now" made a blank default outrank, and
+    /// then replace, the real configuration still on its way from iCloud.
     static func fetchOrCreate(in context: ModelContext) -> BoardConfig {
         if let existing = fetchCurrent(in: context) { return existing }
         let config = BoardConfig()
-        config.updatedAt = .now
         context.insert(config)
         try? context.save()
         return config
@@ -317,7 +337,7 @@ final class ReminderItem {
 
 /// A value copy of what the TV needs from `BoardConfig`, with defaults when the
 /// phone has not published yet. Keeps the board views free of optionals.
-nonisolated struct BoardSnapshot: Sendable {
+nonisolated struct BoardSnapshot: Sendable, Equatable, Codable {
     var enabledPanels: Set<PanelKind> = [.weather, .cameras, .home, .reminders]
     var panelOrder: [PanelKind] = PanelKind.rightColumn
     var wallpaperPreset: WallpaperPreset = .default
@@ -332,7 +352,26 @@ nonisolated struct BoardSnapshot: Sendable {
     var showHomeAlerts = true
     var lastPublishedAt: Date? = nil
     var publishedFromDevice = ""
+    var updatedAt = Date.distantPast
     var hasConfig = false
+
+    /// The photo is megabytes and lives with its source; the copy the TV
+    /// keeps of the last board it showed leaves it out.
+    private enum CodingKeys: String, CodingKey {
+        case enabledPanels, panelOrder, wallpaperPreset, wallpaperUsesPhoto, wallpaperDim, wallpaperBlur
+        case selectedCameraIDs, selectedAccessoryIDs, maxReminders, reminderSections, showHomeAlerts
+        case lastPublishedAt, publishedFromDevice, updatedAt, hasConfig
+    }
+
+    /// See `BoardConfig.freshness`.
+    var freshness: Date { max(updatedAt, lastPublishedAt ?? .distantPast) }
+
+    /// Cheap to compare and small enough to store.
+    var withoutPhoto: BoardSnapshot {
+        var copy = self
+        copy.wallpaperImageData = nil
+        return copy
+    }
 
     init() {}
 
@@ -354,6 +393,7 @@ nonisolated struct BoardSnapshot: Sendable {
         showHomeAlerts = config.showHomeAlerts
         lastPublishedAt = config.lastPublishedAt
         publishedFromDevice = config.publishedFromDevice
+        updatedAt = config.updatedAt
     }
 
     func isEnabled(_ kind: PanelKind) -> Bool { enabledPanels.contains(kind) }
