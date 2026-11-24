@@ -115,6 +115,11 @@ private struct SettingsList: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+                if let note = takeoverNote {
+                    Label(note, systemImage: "arrow.left.arrow.right")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.vertical, 4)
 
@@ -141,6 +146,22 @@ private struct SettingsList: View {
         guard !LookoutStore.isDemo, !owner.isEmpty,
               owner != BoardPublisher.deviceName, owner != UIDevice.current.name else { return nil }
         return owner
+    }
+
+    /// Why the name on the Apple TV's "Published by" line changed: for a day
+    /// after this device took over from its earlier self, while it still
+    /// publishes.
+    private var takeoverNote: String? {
+        guard !LookoutStore.isDemo, let takeover = publisher.takeover,
+              config.publishedFromDevice == BoardPublisher.deviceName,
+              Date.now.timeIntervalSince(takeover.date) < 24 * 60 * 60 else { return nil }
+        let model = UIDevice.current.model
+        switch takeover.kind {
+        case .reinstalled:
+            return String(localized: "Lookout was reinstalled, so this \(model) took over publishing from its earlier name, \(takeover.from).")
+        case .replaced:
+            return String(localized: "This \(model) replaced \(takeover.from) and took over publishing from it.")
+        }
     }
 
     private var statusLine: String {

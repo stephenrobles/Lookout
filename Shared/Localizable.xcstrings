@@ -917,6 +917,16 @@
         }
       }
     },
+    "Lookout was reinstalled, so this %@ took over publishing from its earlier name, %@.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lookout wurde neu installiert, daher hat dieses %1$@ das Veröffentlichen von seinem früheren Namen %2$@ übernommen."
+          }
+        }
+      }
+    },
     "Midnight": {
       "localizations": {
         "de": {
@@ -1593,6 +1603,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Die gespeicherte Kopie auf diesem Apple TV ist nicht aktuell, daher wird das Board direkt aus iCloud gelesen. Die Kopie wird beim nächsten Öffnen von Lookout neu aufgebaut."
+          }
+        }
+      }
+    },
+    "This %@ replaced %@ and took over publishing from it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses %1$@ hat %2$@ ersetzt und das Veröffentlichen von ihm übernommen."
           }
         }
       }

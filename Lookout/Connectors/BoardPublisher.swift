@@ -21,6 +21,9 @@ final class BoardPublisher {
     /// The other iPhone or iPad that currently publishes, when it is not
     /// this one. Automatic publishes are skipped while it is set.
     private(set) var deferringTo: String?
+    /// Set when this device took publishing over from the name it had before
+    /// a reinstall or a move to a new phone. Shown on the status card.
+    private(set) var takeover = PublisherMemory.lastTakeover
 
     /// How a publish ended: saved on this device at the given moment and
     /// now waiting for iCloud, nothing to do (left to another device, or one
@@ -45,11 +48,10 @@ final class BoardPublisher {
         return tail.isEmpty ? name : "\(name) \(tail)"
     }()
 
-    /// If the publishing device has been silent this long, any device may
-    /// take over, so a phone that was reset or retired cannot freeze the board.
-    /// A bare "iPhone" or "iPad" owner comes from a build before 1.3 and is
-    /// treated as free.
-    private let ownerTimeout: TimeInterval = 36 * 60 * 60
+    /// When this install first ran under `deviceName`. A publisher that was
+    /// last heard from before then can be this device's earlier self; see
+    /// `PublisherSuccession`.
+    static let deviceNameSince = PublisherMemory.since(deviceName)
 
     /// Reminders further out than this are not published; the TV shows a
     /// handful anyway.
@@ -61,6 +63,7 @@ final class BoardPublisher {
     private let maxPublishedSections = 6
 
     init() {
+        _ = Self.deviceNameSince
         changeObserver = NotificationCenter.default.addObserver(
             forName: .EKEventStoreChanged, object: eventStore, queue: .main
         ) { [weak self] _ in
@@ -200,9 +203,15 @@ final class BoardPublisher {
         let context = LookoutStore.container.mainContext
         let config = Self.dedupedConfig(in: context)
 
-        let owner = config.publishedFromDevice
-        if !claim, !owner.isEmpty, owner != Self.deviceName, owner != UIDevice.current.name,
-           let last = config.lastPublishedAt, Date.now.timeIntervalSince(last) < ownerTimeout {
+        let turn = PublisherSuccession.turn(.init(
+            owner: config.publishedFromDevice, ownerLastPublished: config.lastPublishedAt,
+            now: .now, claim: claim,
+            identity: Self.deviceName, deviceName: UIDevice.current.name,
+            identitySince: Self.deviceNameSince,
+            publishedHere: PublisherMemory.publishedHere,
+            publishedBefore: PublisherMemory.publishedBefore,
+            tookOverFrom: PublisherMemory.tookOverFrom))
+        if case .leave(let owner) = turn {
             deferringTo = owner
             lastPublishReason = "\(reason), left to \(owner)"
             return .skipped
@@ -228,6 +237,11 @@ final class BoardPublisher {
             lastError = nil
             lastPublishReason = reason
             lastSavedAt = saving
+            PublisherMemory.rememberPublished(as: Self.deviceName)
+            if case .takeOver(let owner, let predecessor) = turn {
+                takeover = PublisherMemory.rememberTakeover(from: owner, predecessor)
+                lastPublishReason = "\(reason), took over from \(owner)"
+            }
             return .saved(saving)
         } catch {
             lastError = error.localizedDescription
