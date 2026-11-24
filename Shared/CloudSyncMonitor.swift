@@ -23,10 +23,26 @@ final class CloudSyncMonitor {
     /// Until then the local store may simply not have caught up with iCloud.
     private(set) var initialImportDone = false
 
+    /// How a wait for an upload ended.
+    enum ExportResult: Sendable { case uploaded, failed, timedOut, notSyncing }
+
+    /// When the most recent upload that has ended began, and how it ended.
+    /// Whatever was saved before it began was part of it.
+    @ObservationIgnored private var lastExportBegan: Date?
+    @ObservationIgnored private var lastExportSucceeded = false
+
+    private struct ExportWaiter {
+        var id: UUID
+        var saved: Date
+        var continuation: CheckedContinuation<ExportResult, Never>
+    }
+    @ObservationIgnored private var exportWaiters: [ExportWaiter] = []
+
     private var observer: NSObjectProtocol?
 
     private struct Outcome: Sendable {
         var kind: Int
+        var started: Date
         var finished: Date?
         var succeeded: Bool
         var message: String?
@@ -49,7 +65,8 @@ final class CloudSyncMonitor {
             case .export: kind = 2
             @unknown default: kind = -1
             }
-            let outcome = Outcome(kind: kind, finished: event.endDate, succeeded: event.succeeded,
+            let outcome = Outcome(kind: kind, started: event.startDate, finished: event.endDate,
+                                  succeeded: event.succeeded,
                                   message: event.error.map(CloudSyncMonitor.describe))
             Task { @MainActor [weak self] in self?.apply(outcome) }
         }
@@ -61,8 +78,12 @@ final class CloudSyncMonitor {
         switch outcome.kind {
         case 0:
             setupError = outcome.succeeded ? nil : outcome.message
-            // No account or no network: there will be no import to wait for.
-            if !outcome.succeeded { initialImportDone = true }
+            // No account or no network: there will be no import to wait for,
+            // and no upload either.
+            if !outcome.succeeded {
+                initialImportDone = true
+                endExportWaits(.failed) { _ in true }
+            }
         case 1:
             if outcome.succeeded { lastImport = finished }
             importError = outcome.succeeded ? nil : outcome.message
@@ -70,6 +91,9 @@ final class CloudSyncMonitor {
         case 2:
             if outcome.succeeded { lastExport = finished }
             exportError = outcome.succeeded ? nil : outcome.message
+            lastExportBegan = outcome.started
+            lastExportSucceeded = outcome.succeeded
+            endExportWaits(outcome.succeeded ? .uploaded : .failed) { $0.saved <= outcome.started }
         default:
             break
         }
@@ -83,6 +107,56 @@ final class CloudSyncMonitor {
         let deadline = Date.now.addingTimeInterval(timeout)
         while !initialImportDone, Date.now < deadline, !Task.isCancelled {
             try? await Task.sleep(for: .milliseconds(250))
+        }
+    }
+
+    /// False when nothing saved on this device can reach iCloud right now:
+    /// demo data, a store opened without iCloud, or no account.
+    private var canExport: Bool {
+        !LookoutStore.isDemo && observer != nil && setupError == nil
+            && LookoutStore.mode != .localOnly && LookoutStore.mode != .memory
+    }
+
+    /// True while something saved at `saved` is still waiting for an upload:
+    /// none that began after it has ended yet.
+    func isAwaitingExport(of saved: Date) -> Bool {
+        guard canExport else { return false }
+        if let began = lastExportBegan, began >= saved { return false }
+        return true
+    }
+
+    /// Returns once an upload that began after `saved` has ended, so what
+    /// was saved then is in iCloud or has failed to get there, or after
+    /// `timeout` seconds. A local save returns long before that, and iOS
+    /// suspends an app in the background as soon as it says it is done.
+    /// Nothing is polled: the mirror's own events end the wait.
+    func waitForExport(of saved: Date, timeout: Double) async -> ExportResult {
+        guard canExport else { return setupError == nil ? .notSyncing : .failed }
+        if let began = lastExportBegan, began >= saved {
+            return lastExportSucceeded ? .uploaded : .failed
+        }
+        guard timeout > 0, !Task.isCancelled else { return .timedOut }
+        let id = UUID()
+        let timer = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(timeout))
+            if !Task.isCancelled { self?.endExportWaits(.timedOut) { $0.id == id } }
+        }
+        defer { timer.cancel() }
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                exportWaiters.append(ExportWaiter(id: id, saved: saved, continuation: continuation))
+            }
+        } onCancel: {
+            Task { @MainActor [weak self] in self?.endExportWaits(.timedOut) { $0.id == id } }
+        }
+    }
+
+    private func endExportWaits(_ result: ExportResult, where matches: (ExportWaiter) -> Bool) {
+        let ended = exportWaiters.filter(matches)
+        guard !ended.isEmpty else { return }
+        exportWaiters.removeAll(where: matches)
+        for waiter in ended {
+            waiter.continuation.resume(returning: result)
         }
     }
 

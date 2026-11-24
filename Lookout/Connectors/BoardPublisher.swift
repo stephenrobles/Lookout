@@ -22,8 +22,18 @@ final class BoardPublisher {
     /// this one. Automatic publishes are skipped while it is set.
     private(set) var deferringTo: String?
 
+    /// How a publish ended: saved on this device at the given moment and
+    /// now waiting for iCloud, nothing to do (left to another device, or one
+    /// already running), or not saved.
+    enum Outcome: Sendable, Equatable { case saved(Date), skipped, failed }
+
+    /// When a publish last saved something for iCloud to upload.
+    @ObservationIgnored private(set) var lastSavedAt: Date?
+
     private var changeObserver: NSObjectProtocol?
     private var pending: Task<Void, Never>?
+    @ObservationIgnored private var pendingCount = 0
+    @ObservationIgnored private var idleWaiters: [CheckedContinuation<Void, Never>] = []
 
     /// What this device signs its publishes with. iOS gives every phone the
     /// same generic name, so a short tail of the vendor identifier keeps two
@@ -135,19 +145,47 @@ final class BoardPublisher {
     /// phones on one account stop overwriting each other's agenda.
     func schedulePublish(after seconds: Double, claim: Bool = false) {
         pending?.cancel()
+        pendingCount += 1
+        let number = pendingCount
         pending = Task { @MainActor [weak self] in
             if seconds > 0 {
                 try? await Task.sleep(for: .seconds(seconds))
             }
-            guard !Task.isCancelled else { return }
-            await self?.publish(reason: "change", claim: claim)
+            if !Task.isCancelled {
+                await self?.publish(reason: "change", claim: claim)
+            }
+            // A newer request has already taken this one's place otherwise.
+            if let self, self.pendingCount == number { self.pending = nil }
         }
     }
 
-    func publish(reason: String, claim: Bool = false) async {
-        guard !isPublishing, !LookoutStore.isDemo, !LookoutSchemaSeed.isRequested else { return }
+    /// Returns once no publish is waiting out its delay or running, so
+    /// `lastSavedAt` covers every change made so far.
+    func waitUntilIdle() async {
+        while true {
+            if let waiting = pending {
+                await waiting.value
+            } else if isPublishing {
+                await withCheckedContinuation { idleWaiters.append($0) }
+            } else {
+                return
+            }
+        }
+    }
+
+    /// True while a publish is waiting out its delay or running.
+    var isBusy: Bool { pending != nil || isPublishing }
+
+    @discardableResult
+    func publish(reason: String, claim: Bool = false) async -> Outcome {
+        guard !isPublishing, !LookoutStore.isDemo, !LookoutSchemaSeed.isRequested else { return .skipped }
         isPublishing = true
-        defer { isPublishing = false }
+        defer {
+            isPublishing = false
+            let waiters = idleWaiters
+            idleWaiters = []
+            for waiter in waiters { waiter.resume() }
+        }
         refreshStatus()
 
         // Right after launch the store may not have caught up with iCloud.
@@ -167,7 +205,7 @@ final class BoardPublisher {
            let last = config.lastPublishedAt, Date.now.timeIntervalSince(last) < ownerTimeout {
             deferringTo = owner
             lastPublishReason = "\(reason), left to \(owner)"
-            return
+            return .skipped
         }
         deferringTo = nil
 
@@ -182,12 +220,18 @@ final class BoardPublisher {
         // what decides which record wins when there are two.
         config.lastPublishedAt = .now
         config.publishedFromDevice = Self.deviceName
+        // Taken before the save: the upload that carries these records can
+        // only begin after it.
+        let saving = Date.now
         do {
             try context.save()
             lastError = nil
             lastPublishReason = reason
+            lastSavedAt = saving
+            return .saved(saving)
         } catch {
             lastError = error.localizedDescription
+            return .failed
         }
     }
 
